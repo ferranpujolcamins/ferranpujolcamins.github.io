@@ -4,5 +4,4 @@ title: About
 permalink: /about/
 ---
 I'm Ferran Pujol Camins.
-
-{{- site.description | escape -}}
+{{site.description | escape -}}

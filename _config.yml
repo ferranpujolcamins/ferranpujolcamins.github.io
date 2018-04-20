@@ -16,7 +16,9 @@
 title: Ferran Pujol Camins
 email: me@ferranpujolcamins.cat
 description: >- # this means to ignore newlines until "baseurl:"
-  iOS Developer. I spend my free time doing my best to make @mixxxdj better.
+  I work as an iOS Developer. I spend my free time contributing to open source software.
+  I know Swift, Objective-C, C++ and Rust. I want to learn Haskell.
+  I'm graduating in Maths.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://www.ferranpujolcamins.cat" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
