@@ -1,0 +1,48 @@
+$dark-brand-color: darken($brand-color, 15%);
+$light-brand-color: lighten($brand-color, 70%);
+
+.autoTable {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 30px;
+}
+
+table.innerBorderTable {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+.innerBorderTable th {
+  background-color: lighten($grey-color-light, 3%);
+  border: 1px solid darken($grey-color-light, 4%);
+  border-bottom-color: darken($grey-color-light, 12%);
+}
+.innerBorderTable td {
+  border: 1px solid $grey-color-light;
+}
+
+
+.meter {
+    height: 5px;  /* Can be anything */
+	  position: relative;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: inset 4px 4px 8px #dbdbdb, 
+                inset -4px -4px 8px #ffffff;
+}
+  
+.meter > span {
+    display: block;
+    height: 100%;
+    border-radius: 8px;
+    background-color: $dark-brand-color;
+    background-image: linear-gradient(
+      center bottom,
+      $dark-brand-color 37%,
+      $light-brand-color 69%
+    );
+    box-shadow: 
+      inset 0 2px 4px  rgba(255,255,255,0.63),
+      inset 0 -2px 4px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+}
