@@ -96,7 +96,7 @@ permalink: /resume/
   <col width="17%">
   <tr>
     <td>Jan. 2018 – June 2018</td>
-    <td>iOS Developer intern</td>
+    <td>iOS Developer</td>
     <td>The Clubberize app extensively uses location services
      including geofencing and beacons, Branch.io deep links
       and push notifications.</td>
