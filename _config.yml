@@ -16,12 +16,10 @@
 title: Ferran Pujol Camins
 email: me@ferranpujolcamins.cat
 description: >- # this means to ignore newlines until "baseurl:"
-  I work as an iOS Developer.
-  I studied maths although I dropped out before graduation.
-  I'm into functional programming and category theory.
-  I like to contribute to open source projects, mainly Mixxx,
-  the open source dj software.
-  I like to play techno music.
+  I'm a former iOS developer, looking for a career change towards C++. I’m now studying and coding in C++ and Qt full time. I contribute to the open source projects FreeCAD (3D CAD) and Mixxx (DJ software).
+  I also know Rust and Haskell.
+  I'm interested into functional programming and category theory.
+   
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://www.ferranpujolcamins.cat" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: ferranpujolca
