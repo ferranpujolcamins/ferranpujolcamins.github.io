@@ -3,9 +3,30 @@ layout: page
 title: Resume
 permalink: /resume/
 ---
+<div class="banner">
+Currently looking for a C++ job.
+</div>
 
 ## Skills
 <div class="autoTable">
+  <div>
+    <span>C++</span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
+  <div>
+    <span>Qt</span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
+  <div>
+    <span>Rust</span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
   <div>
     <span>Swift</span>
     <div class="meter">
@@ -31,24 +52,6 @@ permalink: /resume/
     </div>
   </div>
   <div>
-    <span>Rust</span>
-    <div class="meter">
-      <span style="width: 50%"/>
-    </div>
-  </div>
-  <div>
-    <span>C++</span>
-    <div class="meter">
-      <span style="width: 50%"/>
-    </div>
-  </div>
-  <div>
-    <span>Purescript</span>
-    <div class="meter">
-      <span style="width: 25%"/>
-    </div>
-  </div>
-  <div>
     <span>Haskell</span>
     <div class="meter">
       <span style="width: 25%"/>
@@ -71,7 +74,7 @@ permalink: /resume/
   <col width="27%">
   <col width="17%">
    <tr>
-    <td>Jan. 2020 – Present</td>
+    <td>Jan. 2020 – June 2020</td>
     <td>Back-end Developer</td>
     <td>I joined the release tooling team, a newly formed team with the mission to
     develop a back-end service that automates our apps release process.
@@ -79,13 +82,13 @@ permalink: /resume/
     on Spring, Hibernate, Kotlin and Arrow.</td>
   </tr>
   <tr>
-    <td>Sept. 2018 – Dec. 2019</td>
+    <td>Sept. 2018 – Sept. 2020</td>
     <td>iOS Developer</td>
     <td> The FREENOW driver app follows the
     <a href="https://github.com/freenowtech/Sensor">Sensor</a> reactive
     architecture, based on RxSwift.
     I worked in a cross functional team developing new features and maintaining
-    legacy code. I also developed new features for the Sensor library.</td>
+    legacy code. I also developed new features for the <a href="https://github.com/freenowtech/Sensor">Sensor</a> library.</td>
   </tr>
 </table>
 
