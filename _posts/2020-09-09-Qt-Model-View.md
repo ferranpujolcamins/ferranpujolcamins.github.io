@@ -1,28 +1,14 @@
 ---
 layout: post
-title:  "Overview of the Qt Model-View paradigm"
+title:  "Cheat sheet of Qt Model/View paradigm"
 ---
 
-# Welcome
+This post is short cheat sheet about Qt Model/View paradigm.
 
-**Hello world**, this is my first Jekyll blog post.
+This post is a summary the Official Qt Model/View 
+It is based on the official Qt Model/View 
+[tutorial](https://doc.qt.io/qt-5/modelview.html) and [documentation](https://doc.qt.io/qt-5/model-view-programming.html).
 
-I hope you like it!
+# Widgets vs views
 
-{% graphviz %}
-digraph {
-  node [shape=circle, style=filled];
-  S [fillcolor=green];
-  A [fillcolor=yellow];
-  B [fillcolor=yellow];
-  C [fillcolor=yellow];
-  D [shape=doublecircle, fillcolor=green];
-  S -> A [label=a];
-  S -> B [label=b];
-  A -> D [label=c];
-  B -> D [label=d];
-}
-{% endgraphviz %}
-
-# References
-[Official Qt Model/View Tutorial](https://doc.qt.io/qt-5/modelview.html)
+# Roles
