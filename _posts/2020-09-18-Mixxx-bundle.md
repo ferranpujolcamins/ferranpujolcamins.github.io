@@ -3,9 +3,11 @@ layout: post
 title:  "Generating a macOS bundle for Mixxx"
 ---
 
+**~~~~~~~REWRITE INTRO**
+
 [Mixxx](https://mixxx.org/) is an open source Dj software that relies on
 [CMake](https://cmake.org/) to be built. I'm one of the few contributors with access to a Mac computer, so I took the task
-of generating the macOS bundle for the application. I've never worked with CMake or macOS bundles before, so this was a good opportunity to learn more.
+of generating the macOS bundle for the application. I've never worked with CMake or macOS bundles before, so this was a good opportunity for me to learn more.
 
 In this post I describe my experience learning CMake and macOS bundles and solving the problem of generating a macOS bundle for Mixxx.
 This is not a concise step by step guide, but rather an extensive description of everything I've learnt,
@@ -36,18 +38,22 @@ Is this applicable to the specific case of app bundle**
 
 ## Generating a bundle with CMake and CPack
 
-CPack is a tool that helps creating installers or installation packages of our application
+*CPack* is a tool that helps creating installers or installation packages for our application
 for each operating system we support.
 
-CMake comes with a CPack module, which will automatically generate an
-appropriate CPack configuration file<sup>[[2]](#ref-using-cpack-with-cmake)</sup>.
-The only thing we need to do to set it up is to include the module in our 
-CMakeLists.txt:
+Just like CMake has several *generators* to write the input files for several build systems,
+CPack ha several *generators* to create different types of packages and installers
+for different platforms<sup>[[2]](#ref-packaging-with-cpack)</sup>.
+
+There are two main generators for macOS bundles: the *DragNDrop* generator and the *Bundle* generator.
+
+CPack is a standalone tool that reads a configuration file usually named CPackConfig.cmake.
+However, CMake comes with a CPack module, which will automatically generate an
+appropriate CPack configuration file<sup>[[2.1]](#ref-using-cpack-with-cmake)</sup>.
+The only thing we need to do to set it up is to include the module in our CMakeLists.txt:
 ```cmake
 include(CPack)
 ```
-
-**what are cpack generators?**
 
 In order to use the CPack Bundle generator we need three things, each defined in a CMake variable<sup>[[3]](#ref-cpack-bundle-generator)</sup>:
 
@@ -70,7 +76,8 @@ fellow developers.
 ## References
 
 1. <span id="ref-bundle-programming-guide" class="ref">[Bundle Programming Guide (developer.apple.com)](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html)</span>
-2. <span id="ref-using-cpack-with-cmake" class="ref">[Using CPack with CMake (gitlab.kitware.com/cmake)](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake)</span>
+2. <span id="ref-packaging-with-cpack" class="ref">[Packaging with CPack (gitlab.kitware.com/cmake)](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack)</span>
+    1. <span id="ref-using-cpack-with-cmake" class="ref">[Using CPack with CMake](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake)</span>
 3. <span id="ref-cpack-bundle-generator" class="ref">[CPack Bundle Generator (cmake.org)](https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html)</span>
 
 https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only
