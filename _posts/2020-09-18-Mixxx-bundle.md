@@ -15,10 +15,10 @@ every problem I've faced, every reference I've read and every solution I've trie
 
 **This post only reflects my experience solving this problem for Mixxx. For other applications and environments, your mileage my vary.**
 
-## What are macOS bundles?
+## What are macOS bundles?<sup>[[1]](#ref-bundle-programming-guide)</sup>
 
 A bundle is just a directory with a specific structure that
-holds executable code and the resources used by that code<sup>[[1]](#ref-bundle-programming-guide)</sup>.
+holds executable code and the resources used by that code.
 The operating system treats such directories in special ways. For example, a macOS
 app is a bundle (i.e. a directory). However, macOS presents you the app
 as a single unit, as it was a file, in order to prevent users to accidentally
@@ -33,8 +33,23 @@ a bundle can be:
 
 However, for the task at hand we are only concerned about application bundles.
 
-**XXXX Explain that a bundle can contain more than one executable. One bundle with several executables vs several bundles
-Is this applicable to the specific case of app bundle**
+### Structure of an application bundle<sup>[[1.1]](#ref-application-bundles)</sup>
+The basic structure of a Mac app bundle is very simple. At the top-level of the bundle there is a directory named Contents. This directory contains everything, including the resources, executable code, private frameworks, private plug-ins, and support files needed by the application.
+
+**The basic structure of a macOS application**
+```
+MyApp.app/
+   Contents/
+      Info.plist
+      MacOS/
+      Resources/
+```
+
+The *Info.plist* file contains configuration information for the application. The system relies on the presence of this file to identify relevant information about your application and any related files.  
+
+The *MacOS* directory contains the application’s standalone executable code. Typically, this directory contains only one binary file with your application’s main entry point and statically linked code. **However, you may put other standalone executables (such as command-line tools) in this directory as well**.
+
+The *Resources* directory contains all of the application’s resource files. Resources are data files that live outside your application’s executable file like images, icons, sounds, strings files, configuration files, and data files (among others).
 
 ## Generating a bundle with CMake and CPack
 
@@ -82,8 +97,8 @@ fellow developers.
         </span>
         <ol class="nestedList">
             <li>
-                <span id="ref-bundle-programming-guide" class="ref">
-                    <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW19">Anatomy of a macOS Application Bundle</a>
+                <span id="ref-application-bundles" class="ref">
+                    <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW13">Application Bundles</a>
                 </span>
             </li>
         </ol>

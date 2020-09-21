@@ -7,7 +7,7 @@ title:  "Career change"
 On september 2020 I quit my job as iOS developer. I want to study and practice C++
 and find a C++ job in the industrial sector. This is how I'm doing so far:
 
-## Week 1 <span class="titleDate">14 - 20 Sept.</span>
+## Week 1 <span class="inlineSubtitle">14 - 20 Sept.</span>
 
 **I started the week trying to build Mixxx with Nix on macOS.**
 It turns out not all of Mixxx dependencies support Nix on macOS, so I started
