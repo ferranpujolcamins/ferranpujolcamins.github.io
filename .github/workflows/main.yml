@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: fwal/setup-swift@v1.3.0
-      - name: Build 
-        run: swift build      
+      - name: Generate
+        run: swift run
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.6.1
         with:
