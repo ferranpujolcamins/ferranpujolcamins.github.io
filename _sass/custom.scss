@@ -70,6 +70,11 @@ table.innerBorderTable {
   transition-delay: 100ms;
 }
 
+.titleDate {
+  font-size: medium;
+  padding-left: 0.5em;
+}
+
 // Nested lists numbering
 ol.nestedList {
   counter-reset: item
@@ -80,9 +85,4 @@ ol.nestedList li {
 ol.nestedList li:before {
   content: counters(item, ".") ". ";
   counter-increment: item
-}
-
-.titleDate {
-  font-size: medium;
-  padding-left: 0.5em;
 }

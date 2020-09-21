@@ -80,6 +80,13 @@ fellow developers.
         <span id="ref-bundle-programming-guide" class="ref">
             <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html">Bundle Programming Guide (developer.apple.com)</a>
         </span>
+        <ol class="nestedList">
+            <li>
+                <span id="ref-bundle-programming-guide" class="ref">
+                    <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW19">Anatomy of a macOS Application Bundle</a>
+                </span>
+            </li>
+        </ol>
     </li>
     <li>
         <span id="ref-packaging-with-cpack" class="ref">
@@ -92,6 +99,11 @@ fellow developers.
                 </span>
             </li>
         </ol>
+    </li>
+    <li>
+        <span id="ref-drag-n-drop-package-generator" class="ref">
+            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">DragNDrop Package generator (gitlab.kitware.com/cmake)</a>
+        </span>
     </li>
     <li>
         <span id="ref-cpack-bundle-generator" class="ref">
