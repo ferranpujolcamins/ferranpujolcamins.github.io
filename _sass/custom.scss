@@ -71,13 +71,13 @@ table.innerBorderTable {
 }
 
 // Nested lists numbering
-ol {
+ol.nestedList {
   counter-reset: item
 }
-li {
+ol.nestedList li {
   display: block
 }
-li:before {
+ol.nestedList li:before {
   content: counters(item, ".") ". ";
   counter-increment: item
 }

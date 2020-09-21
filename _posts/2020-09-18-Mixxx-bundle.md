@@ -75,11 +75,32 @@ fellow developers.
 
 ## References
 
-1. <span id="ref-bundle-programming-guide" class="ref">[Bundle Programming Guide (developer.apple.com)](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html)</span>
-2. <span id="ref-packaging-with-cpack" class="ref">[Packaging with CPack (gitlab.kitware.com/cmake)](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack)</span>
-    1. <span id="ref-using-cpack-with-cmake" class="ref">[Using CPack with CMake](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake)</span>
-3. <span id="ref-cpack-bundle-generator" class="ref">[CPack Bundle Generator (cmake.org)](https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html)</span>
-
-https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only
-
-9. <span class="ref">[MACOSX_BUNDLE vs CPACK_BUNDLE](https://stackoverflow.com/a/44629910)</span>
+<ol class="nestedList">
+    <li>
+        <span id="ref-bundle-programming-guide" class="ref">
+            <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html">Bundle Programming Guide (developer.apple.com)</a>
+        </span>
+    </li>
+    <li>
+        <span id="ref-packaging-with-cpack" class="ref">
+            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">Packaging with CPack (gitlab.kitware.com/cmake)</a>
+        </span>
+        <ol class="nestedList">
+            <li>
+                <span id="ref-using-cpack-with-cmake" class="ref">
+                    <a herf="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake">Using CPack with CMake</a>
+                </span>
+            </li>
+        </ol>
+    </li>
+    <li>
+        <span id="ref-cpack-bundle-generator" class="ref">
+            <a href="https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator (cmake.org)</a>
+        </span>
+    </li>
+    <li>
+        <span class="ref">
+            <a href="https://stackoverflow.com/a/44629910">MACOSX_BUNDLE vs CPACK_BUNDLE</a>
+        </span>
+    </li>
+</ol>
