@@ -9,11 +9,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-
+      - uses: fwal/setup-swift@v1.3.0
       - name: Build 
-        uses: fwal/setup-swift@v1.3.0
         run: swift build      
-        
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.6.1
         with:
