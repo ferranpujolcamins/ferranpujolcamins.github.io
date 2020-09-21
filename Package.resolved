@@ -1,0 +1,70 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CommonParsers",
+        "repositoryURL": "https://github.com/ilyapuchka/common-parsers.git",
+        "state": {
+          "branch": null,
+          "revision": "32ae19987d03a4fbd7c20e48f44f1725ea277852",
+          "version": null
+        }
+      },
+      {
+        "package": "Interplate",
+        "repositoryURL": "https://github.com/ferranpujolcamins/Interplate.git",
+        "state": {
+          "branch": null,
+          "revision": "4354f59cbf0790f4c1c95d4cb68941288ee64f2f",
+          "version": null
+        }
+      },
+      {
+        "package": "Path.swift",
+        "repositoryURL": "https://github.com/mxcl/Path.swift.git",
+        "state": {
+          "branch": null,
+          "revision": "142d4bc1118602f3679c777d2e0da89c227cd918",
+          "version": "1.2.0"
+        }
+      },
+      {
+        "package": "NonEmpty",
+        "repositoryURL": "https://github.com/pointfreeco/swift-nonempty.git",
+        "state": {
+          "branch": null,
+          "revision": "9ef8c4aea57b8da7fedd5303d29470ea2a00c08d",
+          "version": "0.2.2"
+        }
+      },
+      {
+        "package": "Prelude",
+        "repositoryURL": "https://github.com/ilyapuchka/swift-prelude.git",
+        "state": {
+          "branch": "master",
+          "revision": "84c5734cb345904a73917404753dcc25cab8cca1",
+          "version": null
+        }
+      },
+      {
+        "package": "SnapshotTesting",
+        "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
+        "state": {
+          "branch": null,
+          "revision": "c466812aa2e22898f27557e2e780d3aad7a27203",
+          "version": "1.8.2"
+        }
+      },
+      {
+        "package": "Tagged",
+        "repositoryURL": "https://github.com/pointfreeco/swift-tagged.git",
+        "state": {
+          "branch": null,
+          "revision": "592e1eb4255c571ebffc29955011e352217501b4",
+          "version": "0.5.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
