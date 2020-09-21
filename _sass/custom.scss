@@ -81,3 +81,8 @@ li:before {
   content: counters(item, ".") ". ";
   counter-increment: item
 }
+
+.titleDate {
+  font-size: medium;
+  padding-left: 0.5em;
+}
