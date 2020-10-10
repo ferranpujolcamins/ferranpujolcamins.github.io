@@ -9,11 +9,11 @@ public struct AnyHtml: Html {
         self.init(stringLiteral: string)
     }
 
-    init(_ html: Html) {
+    public init(_ html: Html) {
         self.html = [html]
     }
 
-    init(_ html: [Html]) {
+    public init(_ html: [Html]) {
         self.html = html
     }
 
@@ -33,6 +33,12 @@ public struct HtmlString: Html {
     public var render: Eval<String> {
         .now(string)
     }
+}
+
+prefix operator !
+
+public prefix func !(_ s: String) -> AnyHtml {
+    AnyHtml(s)
 }
 
 //extension String: Html {

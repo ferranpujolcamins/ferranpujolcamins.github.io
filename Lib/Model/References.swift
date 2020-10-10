@@ -33,6 +33,6 @@ extension TreeLabel: Html where L: Html {
 extension Reference: HtmlComponent {
     public var content: Html {
         // TODO: I still have to call AnyHtml here
-        a(href: url) { AnyHtml(name) }
+        a(href: url) { !name }
     }
 }

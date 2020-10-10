@@ -1,5 +1,5 @@
 public func a(href: String) -> HtmlElement {
-    a(href: href) { AnyHtml(href) }
+    a(href: href) { !href }
 }
 
 public func a(href: String, @HtmlBuilder _ content: () -> Html) -> HtmlElement {

@@ -4,7 +4,7 @@ import BowUtils
 import HTML
 
 public struct Site {
-    public init(@HtmlBuilder description: () -> Html,
+    public init(@HtmlBuilder description: () -> Html, // TODO: can be ask an HtmlComponent here?
                              contactInfo: ContactInfo,
                 @HtmlBuilder legalNotice: () -> Html,
                              staticPages: [Page],
