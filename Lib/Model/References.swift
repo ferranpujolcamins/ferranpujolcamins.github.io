@@ -23,16 +23,8 @@ extension TreeLabel where L == Reference {
     }
 }
 
-extension TreeLabel: Html where L: Html {
+extension TreeLabel: HtmlProtocol where L: HtmlProtocol {
     public var render: Eval<String> {
         leaf?.render ?? .now("")
-    }
-}
-    
-// TODO: this is view code:
-extension Reference: HtmlComponent {
-    public var content: Html {
-        // TODO: I still have to call AnyHtml here
-        a(href: url) { !name }
     }
 }

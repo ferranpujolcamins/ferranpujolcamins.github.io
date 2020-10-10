@@ -1,54 +1,34 @@
 import Bow
 
-public protocol Html {
-    var render: Eval<String> { get }
-}
-
-public struct AnyHtml: Html {
+public struct Html: HtmlProtocol {
     public init(_ string: String) {
         self.init(stringLiteral: string)
     }
 
-    public init(_ html: Html) {
+    public init(_ html: HtmlProtocol) {
         self.html = [html]
     }
 
-    public init(_ html: [Html]) {
+    public init(_ html: [HtmlProtocol]) {
         self.html = html
     }
 
-    let html: [Html]
+    let html: [HtmlProtocol]
 
     public var render: Eval<String> {
         html.traverse { $0.render }.map { $0.joined() }^
     }
 }
 
-public struct HtmlString: Html {
-    init(_ string: String) {
-        self.string = string
-    }
-
-    let string: String
-    public var render: Eval<String> {
-        .now(string)
-    }
-}
 
 prefix operator !
 
-public prefix func !(_ s: String) -> AnyHtml {
-    AnyHtml(s)
+public prefix func !(_ s: String) -> Html {
+    Html(s)
 }
 
-//extension String: Html {
-//    public var render: Eval<String> {
-//        .now(self)
-//    }
-//}
-
-extension AnyHtml: ExpressibleByStringLiteral {}
-extension AnyHtml: ExpressibleByStringInterpolation {
+extension Html: ExpressibleByStringLiteral {}
+extension Html: ExpressibleByStringInterpolation {
     public init(stringLiteral value: String) {
         self.init([HtmlString(value)])
     }
@@ -59,7 +39,7 @@ extension AnyHtml: ExpressibleByStringInterpolation {
 }
 
 public struct HtmlArrayStringInterpolation: StringInterpolationProtocol {
-    var html: [Html]
+    var html: [HtmlProtocol]
 
     public init(literalCapacity: Int, interpolationCount: Int) {
         html = []
@@ -70,11 +50,12 @@ public struct HtmlArrayStringInterpolation: StringInterpolationProtocol {
         html.append(HtmlString(literal))
     }
 
-    public mutating func appendInterpolation<H: Html>(_ i: H) {
+    public mutating func appendInterpolation<H: HtmlProtocol>(_ i: H) {
         html.append(i)
     }
 
-    public mutating func appendInterpolation(_ i: Html) {
+    public mutating func appendInterpolation(_ i: HtmlProtocol) {
         html.append(i)
     }
 }
+

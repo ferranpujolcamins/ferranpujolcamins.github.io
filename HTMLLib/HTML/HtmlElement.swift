@@ -1,9 +1,9 @@
 import Bow
 
-public struct HtmlElement: Html {
+public struct HtmlElement: HtmlProtocol {
     private enum TypeOfNode {
         case empty
-        case content(Html)
+        case content(HtmlProtocol)
     }
 
     private init(tag: String, attributes: [String : String], type: TypeOfNode) {
@@ -16,7 +16,7 @@ public struct HtmlElement: Html {
         self.init(tag: tag, attributes: attributes, type: .empty)
     }
 
-    public static func content(tag: String, attributes: [String: String] = [:], @HtmlBuilder content: () -> Html) -> Self {
+    public static func content(tag: String, attributes: [String: String] = [:], @HtmlBuilder content: () -> HtmlProtocol) -> Self {
         self.init(tag: tag, attributes: attributes, type: .content(content()))
     }
 

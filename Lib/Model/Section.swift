@@ -1,20 +1,20 @@
 import HTML
 
 public struct Section {
-    public init(title: AnyHtml, body: AnyHtml, @SectionsBuilder subSections: () -> [Section] = {[]}) {
+    public init(title: Html, body: Html, @SectionsBuilder subSections: () -> [Section] = {[]}) {
         self.title = title
         self.body = body
         self.subSections = subSections()
     }
 
-    public init(body: AnyHtml, @SectionsBuilder subSections: () -> [Section] = {[]}) {
+    public init(body: Html, @SectionsBuilder subSections: () -> [Section] = {[]}) {
         self.title = nil
         self.body = body
         self.subSections = subSections()
     }
 
-    let title: Html?
-    let body: Html
+    let title: HtmlProtocol?
+    let body: HtmlProtocol
 
     let subSections: [Section]
 }

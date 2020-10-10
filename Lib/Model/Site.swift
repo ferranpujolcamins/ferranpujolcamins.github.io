@@ -1,14 +1,16 @@
 import Foundation
 import Bow
 import BowUtils
+import Prelude
 import HTML
 
 public struct Site {
-    public init(@HtmlBuilder description: () -> Html, // TODO: can be ask an HtmlComponent here?
-                             contactInfo: ContactInfo,
-                @HtmlBuilder legalNotice: () -> Html,
-                             staticPages: [Page],
-                             @EvalBuilder posts: () -> [Eval<Post>]) {
+    public init(@HtmlBuilder description: () -> HtmlProtocol,
+                             contactInfo:       ContactInfo,
+                @HtmlBuilder legalNotice: () -> HtmlProtocol,
+                             staticPages:       [Page],
+               @WithDefaultBuilder posts: () -> [Post]
+    ) {
         self.description = description()
         self.contactInfo = contactInfo
         self.legalNotice = legalNotice()
@@ -16,9 +18,9 @@ public struct Site {
         self.posts = posts()
     }
 
-    public let description: Html
+    public let description: HtmlProtocol
     public let contactInfo: ContactInfo
-    public let legalNotice: Html
+    public let legalNotice: HtmlProtocol
     public let staticPages: [Page]
-    public let posts: [Eval<Post>]
+    public let posts: [Post]
 }

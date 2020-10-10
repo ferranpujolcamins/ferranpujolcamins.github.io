@@ -1,8 +1,8 @@
 import Bow
 
-public protocol HtmlComponent: Html {
+public protocol HtmlComponent: HtmlProtocol {
     @HtmlBuilder
-    var content: Html { get }
+    var content: HtmlProtocol { get }
 }
 
 extension HtmlComponent {
