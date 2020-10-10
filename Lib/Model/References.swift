@@ -26,9 +26,3 @@ extension TreeLabel where L == Reference {
         self(Reference(name: name, url: url), subtrees)
     }
 }
-
-extension TreeLabel: HtmlProtocol where L: HtmlProtocol {
-    public var render: Eval<String> {
-        leaf?.render ?? .now("")
-    }
-}

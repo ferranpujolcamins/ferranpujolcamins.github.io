@@ -12,26 +12,3 @@ extension Site: HtmlComponent {
         })
     }
 }
-
-extension Section: HtmlComponent {
-    public var content: HtmlProtocol {
-        title ?? Html("")
-        body
-        subSections.map(\.content)
-    }
-}
-
-extension Page: HtmlComponent {
-    public var content: HtmlProtocol {
-        title
-        abstract
-        sections.map(\.content)
-    }
-}
-
-extension Post: HtmlComponent {
-    public var content: HtmlProtocol {
-        Html("\(date)" as String)
-        page.content
-    }
-}
