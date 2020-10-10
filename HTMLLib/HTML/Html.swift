@@ -20,7 +20,6 @@ public struct Html: HtmlProtocol {
     }
 }
 
-
 prefix operator !
 
 public prefix func !(_ s: String) -> Html {

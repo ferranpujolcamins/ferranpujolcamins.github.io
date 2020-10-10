@@ -1,6 +1,10 @@
 import Bow
 import HTML
 
+public protocol ReferencesProtocol: HtmlComponent {
+    var references: References { get }
+}
+
 public typealias References = [Tree<Reference>]
 
 public final class Reference {

@@ -9,7 +9,7 @@ public struct Site {
                              contactInfo:       ContactInfo,
                 @HtmlBuilder legalNotice: () -> HtmlProtocol,
                              staticPages:       [Page],
-               @WithDefaultBuilder posts: () -> [Post]
+               @WithDefaultBuilder posts: () -> [PostProtocol]
     ) {
         self.description = description()
         self.contactInfo = contactInfo
@@ -22,5 +22,5 @@ public struct Site {
     public let contactInfo: ContactInfo
     public let legalNotice: HtmlProtocol
     public let staticPages: [Page]
-    public let posts: [Post]
+    public let posts: [PostProtocol]
 }

@@ -3,7 +3,7 @@ import Prelude
 import Lib
 import HTML
 
-struct BundleMixxxReferences: Default {
+struct BundleMixxxReferences: Default, ReferencesProtocol {
     private(set) var bundleProgrammingGuide = TreeLabel<Reference>()
     private(set) var applicationBundles = TreeLabel<Reference>()
     private(set) var packagingWithCPack = TreeLabel<Reference>()
@@ -12,10 +12,10 @@ struct BundleMixxxReferences: Default {
     private(set) var cPackBundleGenerator = TreeLabel<Reference>()
     private(set) var macOSXBundleVsCPackBundle = TreeLabel<Reference>()
 
-    private(set) var structure: References = []
+    private(set) var references: References = []
 
     init() {
-        structure = build()
+        references = build()
     }
 
     @TreeBuilder
@@ -33,7 +33,7 @@ struct BundleMixxxReferences: Default {
     }
 }
 
-var generatingAMacOSBundleForMixxx: WithReferences<Post, BundleMixxxReferences> {{ ref in
+var generatingAMacOSBundleForMixxx = WithReferences<Post, BundleMixxxReferences> { ref in
     Post(
         date: Date(day: 9, month: 10, year: 2020),
         title: "Generating a macOS bundle for Mixxx",
@@ -94,5 +94,5 @@ var generatingAMacOSBundleForMixxx: WithReferences<Post, BundleMixxxReferences> 
             }
         }
     )
-}}
+}
 
