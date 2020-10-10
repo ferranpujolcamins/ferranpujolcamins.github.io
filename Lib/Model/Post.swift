@@ -1,8 +1,8 @@
 import Foundation
-import HTMLKit
+import HTML
 
 public struct Post {
-    public init(date: Date, title: HTML, abstract: HTML, @SectionsBuilder sections: () -> [Lib.Section] = {[]}) {
+    public init(date: Date, title: Html, abstract: Html, @SectionsBuilder sections: () -> [Lib.Section] = {[]}) {
         page = Page(title: title, abstract: abstract, sections: sections)
         self.date = date
     }

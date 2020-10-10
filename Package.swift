@@ -15,35 +15,39 @@ let package = Package(
             targets: ["bin"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ferranpujolcamins/Interplate.git", .revision("4354f59cbf0790f4c1c95d4cb68941288ee64f2f")),
         .package(name: "Path.swift", url: "https://github.com/mxcl/Path.swift.git", from: "1.0.0"),
-        .package(url: "https://github.com/vapor-community/HTMLKit.git", from: "2.0.0"),
         .package(name: "Bow", url: "https://github.com/bow-swift/bow.git", .branch("master"))
     ],
     targets: [
         .target(
             name: "bin",
             dependencies: [
-                "site",
+                "Site",
                 .product(name: "Path", package: "Path.swift")
             ],
             path: "bin"
         ),
         .target(
-            name: "site",
+            name: "Site",
             dependencies: [
                 "Lib",
             ],
-            path: "site"
+            path: "Site"
         ),
         .target(
             name: "Lib",
             dependencies: [
-                "Interplate",
-                "HTMLKit",
+                "HTML",
                 "Bow"
             ],
             path: "Lib"
+        ),
+        .target(
+            name: "HTML",
+            dependencies: [
+                "Bow"
+            ],
+            path: "HTML"
         ),
     ]
 )

@@ -1,5 +1,9 @@
 import Path
+import HTML
+import Site
 
 let outputFolder = try! (Path.cwd/"build").mkdir()
 
-try! "Test".write(to: outputFolder/"index.html")
+let legalNotice = site.legalNotice.render.value()
+
+try! legalNotice.write(to: outputFolder/"index.html")

@@ -1,5 +1,5 @@
 import Bow
-import HTMLKit
+import HTML
 
 public typealias References = [Tree<Reference>]
 

@@ -1,5 +1,6 @@
 import Foundation
 import Lib
+import HTML
 
 struct BundleMixxxReferences: Default {
     private(set) var bundleProgrammingGuide = TreeLabel<Reference>()

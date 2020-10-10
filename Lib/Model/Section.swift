@@ -1,20 +1,20 @@
-import HTMLKit
+import HTML
 
 public struct Section {
-    public init(title: HTML, body: HTML, @SectionsBuilder subSections: () -> [Section] = {[]}) {
+    public init(title: Html, body: Html, @SectionsBuilder subSections: () -> [Section] = {[]}) {
         self.title = title
         self.body = body
         self.subSections = subSections()
     }
 
-    public init(body: HTML, @SectionsBuilder subSections: () -> [Section] = {[]}) {
+    public init(body: Html, @SectionsBuilder subSections: () -> [Section] = {[]}) {
         self.title = nil
         self.body = body
         self.subSections = subSections()
     }
 
-    let title: HTML?
-    let body: HTML
+    let title: Html?
+    let body: Html
 
     let subSections: [Section]
 }

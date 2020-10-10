@@ -1,8 +1,8 @@
-import HTMLKit
+import HTML
 
 typealias StyleSheet = Void
 
-typealias Renderer<T> = (T) -> ([HTML], [StyleSheet])
+typealias Renderer<T> = (T) -> ([Html], [StyleSheet])
 
 
 
