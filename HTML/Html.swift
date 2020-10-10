@@ -5,6 +5,10 @@ public protocol Html {
 }
 
 public struct AnyHtml: Html {
+    public init(@HtmlBuilder _ html: () -> AnyHtml) {
+        self.html = html().html
+    }
+
     public init(_ html: [Html]) {
         self.html = html
     }
@@ -38,23 +42,15 @@ extension Array: Html where Element == Html {
     }
 }
 
-extension Array: ExpressibleByUnicodeScalarLiteral where Element == Html {
-    public typealias UnicodeScalarLiteralType = String
-}
-
-extension Array: ExpressibleByExtendedGraphemeClusterLiteral where Element == Html {
-    public typealias ExtendedGraphemeClusterLiteralType = String
-}
-
-extension Array: ExpressibleByStringLiteral where Element == Html {
+extension AnyHtml: ExpressibleByStringLiteral {
     public init(stringLiteral: String) {
-        self = [stringLiteral]
+        self.init([stringLiteral])
     }
 }
 
-extension Array: ExpressibleByStringInterpolation where Element == Html {
+extension AnyHtml: ExpressibleByStringInterpolation {
     public init(stringInterpolation: HtmlArrayStringInterpolation) {
-        self = stringInterpolation.html
+        self.init(stringInterpolation.html)
     }
 }
 

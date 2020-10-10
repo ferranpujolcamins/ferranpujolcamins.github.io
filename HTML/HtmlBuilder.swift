@@ -27,7 +27,7 @@ public struct HtmlBuilder {
 //        html
 //    }
 
-    public static func buildBlock(_ html: Html...) -> [Html] {
-        html
+    public static func buildBlock(_ html: Html...) -> AnyHtml {
+        AnyHtml(html)
     }
 }

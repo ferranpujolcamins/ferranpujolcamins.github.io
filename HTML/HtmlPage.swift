@@ -1,12 +1,18 @@
 import Bow
 
 struct Htmlpage: Html {
-    let body: Html
+    let headContent: Html
+    let bodyContent: Html
 
     var render: Eval<String> {
-        [
-            
-            body
-        ].render
+        AnyHtml {
+            "<!DOCTYPE html>"
+            head {
+                headContent
+            }
+            body {
+                bodyContent
+            }
+        }.render
     }
 }
