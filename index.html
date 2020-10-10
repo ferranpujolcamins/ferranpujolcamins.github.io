@@ -1,7 +1,8 @@
 <!DOCTYPE html><head >
     
 </head><body >
-    2020-10-10 19:30:51 +0000Generating a macOS bundle for Mixxx            In this post I describe my experience learning CMake and macOS bundles and solving the problem of generating a macOS bundle for Mixxx.
+    <div >
+    2020-10-09 00:00:00 +0000Generating a macOS bundle for Mixxx            In this post I describe my experience learning CMake and macOS bundles and solving the problem of generating a macOS bundle for Mixxx.
             This is not a concise step by step guide, but rather an extensive description of everything I've learnt,
             every problem I've faced, every reference I've read and every solution I've tried.                [Mixxx](https://mixxx.org/) is an open source Dj software that relies on
                 [CMake](https://cmake.org/) to be built. I'm one of the few contributors with access to a Mac computer, so I took the task
@@ -44,7 +45,22 @@
 
             The *MacOS* directory contains the application’s standalone executable code. Typically, this directory contains only one binary file with your application’s main entry point and statically linked code. **However, you may put other standalone executables (such as command-line tools) in this directory as well**.
 
-            The *Resources* directory contains all of the application’s resource files. Resources are data files that live outside your application’s executable file like images, icons, sounds, strings files, configuration files, and data files (among others).<div >
+            The *Resources* directory contains all of the application’s resource files. Resources are data files that live outside your application’s executable file like images, icons, sounds, strings files, configuration files, and data files (among others).<a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html">
+    Bundle Programming Guide
+</a><a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW13">
+    Application Bundles
+</a><a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">
+    Packaging with CPack
+</a><a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake">
+    Using CPack with CMake
+</a><a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">
+    DragNDrop Package generator
+</a><a href="https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">
+    CPack Bundle Generator
+</a><a href="https://stackoverflow.com/a/44629910">
+    MACOSX_BUNDLE vs CPACK_BUNDLE
+</a>
+</div><div >
     <a href="http://creativecommons.org/licenses/by-sa/4.0/">
     <img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png">
 </a><br >The content of this site is licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">
