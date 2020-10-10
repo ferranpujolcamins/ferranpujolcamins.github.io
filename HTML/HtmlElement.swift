@@ -25,13 +25,13 @@ public struct HtmlElement: Html {
     private let type: TypeOfNode
 
     public var render: Eval<String> {
-        let renderedAttributes: [String] = attributes.map { arg in
+        let renderedAttributes: String = attributes.map { arg in
             let (attribute, value) = arg
             return """
-            \(attribute): "\(value)"
+            \(attribute)="\(value)"
             """
-        }
-        let renderedOpeningTagAndAttributes = "<\(tag) \(renderedAttributes)>"
+        }.joined(separator: " ")
+        let renderedOpeningTagAndAttributes = "<\((tag + " " + renderedAttributes))>"
         switch type {
         case .empty:
             return Eval.now(renderedOpeningTagAndAttributes)

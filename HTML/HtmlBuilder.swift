@@ -10,7 +10,20 @@ public struct HtmlBuilder {
 //        .later({ f(I()) })
 //    }
 //
-//    public static func buildExpression<A>(_ html: Html) -> Html {
+//    public static func buildExpression<H: Html>(_ html: H) -> Html {
+//        html
+//    }
+//
+//    public static func buildExpression(_ html: Html) -> Html {
+//        html
+//    }
+//
+//    public static func buildExpression(_ html: HtmlElement) -> Html {
+//        html
+//    }
+
+
+//    public static func buildExpression(_ html: [Html]) -> Html {
 //        html
 //    }
 
