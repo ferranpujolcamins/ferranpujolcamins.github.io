@@ -22,3 +22,17 @@ extension TreeLabel where L == Reference {
         self(Reference(name: name, url: url), subtrees)
     }
 }
+
+extension TreeLabel: Html where L: Html {
+    public var render: Eval<String> {
+        leaf?.render ?? .now("")
+    }
+}
+    
+// TODO: this is view code:
+extension Reference: HtmlComponent {
+    public var content: Html {
+        // TODO: I still have to call AnyHtml here
+        a(href: url) { AnyHtml(name) }
+    }
+}

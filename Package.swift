@@ -30,6 +30,8 @@ let package = Package(
         .target(
             name: "Site",
             dependencies: [
+                "Prelude",
+                "BowUtils",
                 "Lib",
             ],
             path: "Site"
@@ -38,16 +40,39 @@ let package = Package(
             name: "Lib",
             dependencies: [
                 "HTML",
-                "Bow"
+                "HTMLComponents",
+                "Bow",
+                "Prelude"
             ],
             path: "Lib"
+        ),
+        .target(
+            name: "HTMLComponents",
+            dependencies: [
+                "HTML"
+            ],
+            path: "HTMLLib/HTMLComponents"
         ),
         .target(
             name: "HTML",
             dependencies: [
                 "Bow"
             ],
-            path: "HTML"
+            path: "HTMLLib/HTML"
+        ),
+        .target(
+            name: "BowUtils",
+            dependencies: [
+                "Bow",
+                "Prelude"
+            ],
+            path: "BowUtils"
+        ),
+        .target(
+            name: "Prelude",
+            dependencies: [
+            ],
+            path: "Prelude"
         ),
     ]
 )

@@ -5,50 +5,48 @@ public protocol Html {
 }
 
 public struct AnyHtml: Html {
-    public init(@HtmlBuilder _ html: () -> AnyHtml) {
-        self.html = html().html
+    public init(_ string: String) {
+        self.init(stringLiteral: string)
     }
 
-    public init(_ html: [Html]) {
+    init(_ html: Html) {
+        self.html = [html]
+    }
+
+    init(_ html: [Html]) {
         self.html = html
     }
 
     let html: [Html]
 
     public var render: Eval<String> {
-        html.render
+        html.traverse { $0.render }.map { $0.joined() }^
     }
 }
 
-public protocol HtmlComponent: Html {
-    var body: Html { get }
-}
+public struct HtmlString: Html {
+    init(_ string: String) {
+        self.string = string
+    }
 
-extension HtmlComponent {
+    let string: String
     public var render: Eval<String> {
-        body.render
+        .now(string)
     }
 }
 
-extension String: Html {
-    public var render: Eval<String> {
-        .now(self)
-    }
-}
+//extension String: Html {
+//    public var render: Eval<String> {
+//        .now(self)
+//    }
+//}
 
-extension Array: Html where Element == Html {
-    public var render: Eval<String> {
-        traverse { $0.render }.map { $0.joined() }^
-    }
-}
-
-extension AnyHtml: ExpressibleByStringLiteral {
-    public init(stringLiteral: String) {
-        self.init([stringLiteral])
-    }
-}
-
+extension AnyHtml: ExpressibleByStringLiteral {}
 extension AnyHtml: ExpressibleByStringInterpolation {
+    public init(stringLiteral value: String) {
+        self.init([HtmlString(value)])
+    }
+
     public init(stringInterpolation: HtmlArrayStringInterpolation) {
         self.init(stringInterpolation.html)
     }
@@ -63,7 +61,7 @@ public struct HtmlArrayStringInterpolation: StringInterpolationProtocol {
     }
 
     public mutating func appendLiteral(_ literal: String) {
-        html.append(literal)
+        html.append(HtmlString(literal))
     }
 
     public mutating func appendInterpolation<H: Html>(_ i: H) {

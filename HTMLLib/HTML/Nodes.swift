@@ -1,8 +1,8 @@
 public func a(href: String) -> HtmlElement {
-    a(href: href) { href }
+    a(href: href) { AnyHtml(href) }
 }
 
-public func a(href: String, @HtmlBuilder _ content: () -> AnyHtml) -> HtmlElement {
+public func a(href: String, @HtmlBuilder _ content: () -> Html) -> HtmlElement {
     .content(tag: "a", attributes: ["href": href], content: content)
 }
 
@@ -10,19 +10,19 @@ public func br() -> HtmlElement {
     .empty(tag: "br")
 }
 
-public func body(@HtmlBuilder _ content: () -> AnyHtml) -> HtmlElement {
+public func body(@HtmlBuilder _ content: () -> Html) -> HtmlElement {
     .content(tag: "body", content: content)
 }
 
-public func div(@HtmlBuilder _ content: () -> AnyHtml) -> HtmlElement {
+public func div(@HtmlBuilder _ content: () -> Html) -> HtmlElement {
     .content(tag: "div", content: content)
 }
 
-public func head(@HtmlBuilder _ content: () -> AnyHtml) -> HtmlElement {
+public func head(@HtmlBuilder _ content: () -> Html) -> HtmlElement {
     .content(tag: "head", content: content)
 }
 
-public func html(@HtmlBuilder _ content: () -> AnyHtml) -> HtmlElement {
+public func html(@HtmlBuilder _ content: () -> Html) -> HtmlElement {
     .content(tag: "html", content: content)
 }
 

@@ -1,12 +1,17 @@
 import Foundation
 import Bow
+import BowUtils
 import HTML
 
 public struct Site {
-    public init(description: Html, contactInfo: ContactInfo, legalNotice: Html, staticPages: [Page], @EvalBuilder posts: () -> [Eval<Post>]) {
-        self.description = description
+    public init(@HtmlBuilder description: () -> Html,
+                             contactInfo: ContactInfo,
+                @HtmlBuilder legalNotice: () -> Html,
+                             staticPages: [Page],
+                             @EvalBuilder posts: () -> [Eval<Post>]) {
+        self.description = description()
         self.contactInfo = contactInfo
-        self.legalNotice = legalNotice
+        self.legalNotice = legalNotice()
         self.staticPages = staticPages
         self.posts = posts()
     }

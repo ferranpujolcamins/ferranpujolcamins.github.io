@@ -1,4 +1,5 @@
 import Bow
+import Prelude
 
 @_functionBuilder
 public struct EvalBuilder {

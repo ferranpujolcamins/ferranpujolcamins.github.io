@@ -4,8 +4,8 @@ import Site
 
 let outputFolder = try! (Path.cwd/"build").mkdir()
 
-let legalNotice = site.legalNotice.render.value()
+let renderedSite = site.render.value()
 
-try! legalNotice.write(to: outputFolder/"index.html")
+try! renderedSite.write(to: outputFolder/"index.html")
 
 print("Done")
