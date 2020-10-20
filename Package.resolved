@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "CSS",
+        "repositoryURL": "https://github.com/carson-katri/swift-css.git",
+        "state": {
+          "branch": "master",
+          "revision": "3ce8fe5662a6c161d2d0737e60a8cbb752b4de25",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftCheck",
         "repositoryURL": "https://github.com/bow-swift/SwiftCheck.git",
         "state": {

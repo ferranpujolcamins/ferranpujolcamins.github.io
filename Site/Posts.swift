@@ -36,7 +36,7 @@ struct BundleMixxxReferences: Default, ReferencesProtocol {
 var generatingAMacOSBundleForMixxx = WithReferences<Post, BundleMixxxReferences> { ref in
     Post(
         date: Date(day: 9, month: 10, year: 2020),
-        title: "Generating a macOS bundle for Mixxx",
+        rawTitle: "Generating a macOS bundle for Mixxx",
         abstract: """
                     In this post I describe my experience learning CMake and macOS bundles and solving the problem of generating a macOS bundle for Mixxx.
                     This is not a concise step by step guide, but rather an extensive description of everything I've learnt,
@@ -54,7 +54,7 @@ var generatingAMacOSBundleForMixxx = WithReferences<Post, BundleMixxxReferences>
 
                             **This post only reflects my experience solving this problem for Mixxx. For other applications and environments, your mileage my vary.**
             """)
-            Section(title: "What are macOS bundles? \(ref.bundleProgrammingGuide)",
+            Section(title: "What are macOS bundles?\(ref.bundleProgrammingGuide)",
                     body: """
                             A bundle is just a directory with a specific structure that
                             holds executable code and the resources used by that code.

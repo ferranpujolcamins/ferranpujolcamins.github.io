@@ -2,10 +2,10 @@ import Path
 import HTML
 import Site
 
-let outputFolder = try! (Path.cwd/"build").mkdir()
+let buildPath = Path.cwd/"build"
+try buildPath.delete()
+try buildPath.mkdir()
 
-let renderedSite = site.render.value()
+let renderedSite = site.render()
 
-try! renderedSite.write(to: outputFolder/"index.html")
-
-print("Done")
+try renderedSite.writeContents(to: buildPath)

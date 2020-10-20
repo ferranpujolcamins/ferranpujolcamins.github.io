@@ -1,14 +1,21 @@
 import HTML
+import CSS
 
-public struct Htmlpage: HtmlComponent {
-    public init(@HtmlBuilder headContent: () -> HtmlProtocol, @HtmlBuilder bodyContent: () -> HtmlProtocol) {
-        self.headContent = headContent()
-        self.bodyContent = bodyContent()
+public protocol HtmlPage: HtmlComponent {
+    var headContent: HtmlProtocol { get }
+    var bodyContent: HtmlProtocol { get }
+    var styles: CSS { get }
+}
+
+public extension HtmlPage {
+    @CSSBuilder
+    var styles: CSS {
+        Select(.body) {}
     }
+}
 
-    public let headContent: HtmlProtocol
-    public let bodyContent: HtmlProtocol
-
+extension HtmlPage {
+    @HtmlBuilder
     public var content: HtmlProtocol {
         "<!DOCTYPE html>"
         head { headContent }

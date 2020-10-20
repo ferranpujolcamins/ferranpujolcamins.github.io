@@ -14,6 +14,10 @@ public struct HtmlBuilder {
         html
     }
 
+    public static func buildOptional(_ children: HtmlProtocol?) -> HtmlProtocol {
+        Html("")
+    }
+
     public static func buildBlock(_ html: HtmlProtocol...) -> HtmlProtocol {
         Html(html)
     }
