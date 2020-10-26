@@ -3,11 +3,13 @@ layout: page
 title: Resume
 permalink: /resume/
 ---
-<div class="banner">
+
+<!-- <div class="banner">
 Currently looking for a C++ job.
-</div>
+</div> -->
 
 ## Skills
+
 <div class="autoTable">
   <div>
     <span>C++</span>
@@ -129,6 +131,76 @@ Currently looking for a C++ job.
   </tr>
 </table>
 
+## Open source contributions
+
+ <table class="innerBorderTable">
+  <col width="27%">
+  <tr>
+    <td>
+      <a href="https://github.com/mixxxdj/mixxx/pulls?q=is%3Apr+author%3Aferranpujolcamins">Mixxx</a>
+    </td>
+    <td>
+      Dj software (C++)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://gitlab.com/uklotzde/aoide-rs/-/commits/development?author=Ferran%20Pujol%20Camins">Aoide</a>
+    </td>
+    <td>
+      A distributed music library management system (Rust)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/ferranpujolcamins/aoide-iTunes">Aoide iTunes</a>
+    </td>
+    <td>
+      An Aoide client to retrieve iTunes library metadata (Swift)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/bow-swift/bow/pulls?q=+is%3Apr+author%3Aferranpujolcamins+">Bow</a>
+    </td>
+    <td>
+      Functional programming library (Swift)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/pointfreeco/swift-snapshot-testing/pulls?q=is%3Apr++author%3Aferranpujolcamins+">Swift Snapshot Testing</a>
+    </td>
+    <td>
+        Library for snapshot testing (Swift)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/freenowtech/Sensor/commits/master">Sensor</a>
+    </td>
+    <td>
+      Reactive architecture (Swift)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/davecom/SwiftGraph/pulls?q=+is%3Apr+author%3Aferranpujolcamins+">SwiftGraph</a>
+    </td>
+    <td>
+      Graph data structures and algorithms library (Swift)
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/NixOS/nixpkgs/pull/98057">nixpkgs</a>
+    </td>
+    <td>
+      A collection of software packages for Nix package manager
+    </td>
+  </tr>
+</table>
+
 ## Education
 
  <table class="innerBorderTable">
@@ -142,4 +214,4 @@ Currently looking for a C++ job.
     <td>Degree in Informatics Eng. (1st course)</td>
     <td>Universitat Politècnica de Catalunya</td>
   </tr>
-</table> 
+</table>

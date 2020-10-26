@@ -17,4 +17,4 @@ working on this from time to time.
 
 I'm one of the few Mixxx contributors with access to a Mac computer,
 so **I took the task of generating the macOS bundle for the application**.
-I spent the rest of the week learning about CMake and CPack.
+I spent the rest of the week learning about CMake, CPack and macOS application bundles.
