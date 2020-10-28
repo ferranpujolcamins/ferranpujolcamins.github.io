@@ -1,15 +1,15 @@
 ---
 layout: post
 title:  "Generating a macOS bundle for Mixxx"
+excludeFromMenu: true
 ---
 
-**~~~~~~~REWRITE INTRO**
+<div class="banner">
+This post is still a work in progress
+</div>
 
-[Mixxx](https://mixxx.org/) is an open source Dj software that relies on
-[CMake](https://cmake.org/) to be built. I'm one of the few contributors with access to a Mac computer, so I took the task
-of generating the macOS bundle for the application. I've never worked with CMake or macOS bundles before, so this was a good opportunity for me to learn more.
-
-In this post I describe my experience learning CMake and macOS bundles and solving the problem of generating a macOS bundle for Mixxx.
+[Mixxx](https://mixxx.org/) is an open source Dj software that uses
+[CMake](https://cmake.org/) as its build system. In this post I describe my experience learning about macOS bundles, how CMake deals with them, and solving the problem of generating a macOS bundle for Mixxx.
 This is not a concise step by step guide, but rather an extensive description of everything I've learnt,
 every problem I've faced, every reference I've read and every solution I've tried.
 
@@ -18,7 +18,7 @@ every problem I've faced, every reference I've read and every solution I've trie
 ## What are macOS bundles?<sup>[[1]](#ref-bundle-programming-guide)</sup>
 
 A bundle is just a directory with a specific structure that
-holds executable code and the resources used by that code.
+contains executable code and the resources needed by that code.
 The operating system treats such directories in special ways. For example, a macOS
 app is a bundle (i.e. a directory). However, macOS presents you the app
 as a single unit, as it was a file, in order to prevent users to accidentally
@@ -31,10 +31,10 @@ a bundle can be:
 - A framework bundle
 - A plug-in bundle
 
-However, for the task at hand we are only concerned about application bundles.
+For the task at hand we are only concerned about application bundles.
 
 ### Structure of an application bundle<sup>[[1.1]](#ref-application-bundles)</sup>
-The basic structure of a Mac app bundle is very simple. At the top-level of the bundle there is a directory named Contents. This directory contains everything, including the resources, executable code, private frameworks, private plug-ins, and support files needed by the application.
+A Mac app bundle has a simple basic structure: there's a top-level directory named Contents. All the contents of the bundle are inside this directory, including the resources, executable code, private frameworks, private plug-ins and support files that the application needs.
 
 **The basic structure of a macOS application**
 ```
@@ -45,9 +45,9 @@ MyApp.app/
       Resources/
 ```
 
-The *Info.plist* file contains configuration information for the application. The system relies on the presence of this file to identify relevant information about your application and any related files.  
+The *Info.plist* file holds configuration information for the application. macOS looks into this file to gather relevant information about your application.
 
-The *MacOS* directory contains the application’s standalone executable code. Typically, this directory contains only one binary file with your application’s main entry point and statically linked code. **However, you may put other standalone executables (such as command-line tools) in this directory as well**.
+The *MacOS* directory contains the standalone executable code of the application. In most cases, this directory contains only one binary file: your application's main executable. **However, you can also put additional standalone executables (such as command-line tools) in this directory**.
 
 The *Resources* directory contains all of the application’s resource files. Resources are data files that live outside your application’s executable file like images, icons, sounds, strings files, configuration files, and data files (among others).
 
@@ -59,10 +59,13 @@ for each operating system we support.
 Just like CMake has several *generators* to write the input files for several build systems,
 CPack ha several *generators* to create different types of packages and installers
 for different platforms<sup>[[2]](#ref-packaging-with-cpack)</sup>.
-
 There are two main generators for macOS bundles: the *DragNDrop* generator and the *Bundle* generator.
 
-CPack is a standalone tool that reads a configuration file usually named CPackConfig.cmake.
+The *DragNDrop* generator does not allow multiple executables inside a single bundle; it enforces a 1:1 bundle-to-executable relationship.<sup>[[3]](#ref-drag-n-drop-package-generator)</sup>
+
+On the other hand, the *Bundle* generator does support multiple executables inside a single bundle. This is the generator we are going to use with Mixxx. The reason being that the [Aoide music library management system](https://gitlab.com/uklotzde/aoide-rs) will probably be integrated with Mixxx in the not so distant future, and this will require Mixxx to ship with a binary for the Aoide server.
+
+CPack is a standalone executable that reads a configuration file usually named `CPackConfig.cmake`.
 However, CMake comes with a CPack module, which will automatically generate an
 appropriate CPack configuration file<sup>[[2.1]](#ref-using-cpack-with-cmake)</sup>.
 The only thing we need to do to set it up is to include the module in our CMakeLists.txt:
@@ -70,7 +73,7 @@ The only thing we need to do to set it up is to include the module in our CMakeL
 include(CPack)
 ```
 
-In order to use the CPack Bundle generator we need three things, each defined in a CMake variable<sup>[[3]](#ref-cpack-bundle-generator)</sup>:
+In order to use the CPack Bundle generator we need to define three CMake variables<sup>[[4]](#ref-cpack-bundle-generator)</sup>:
 
 - `CPACK_BUNDLE_NAME`: The bundle name
 - `CPACK_BUNDLE_ICON`: The bundle icon
@@ -78,22 +81,12 @@ In order to use the CPack Bundle generator we need three things, each defined in
 
 We must set these variables before we include CPack in order for them to take effect.
 
-## Acknowledgements
-
-I want to thank Jan Holthuis. A lot of what's described in this post
-is based on his previous work trying to generate a macOS
-bundle, while he had no access to a Mac!
-
-I want to also thank the Mixxx community for their collective work
-in making the best Dj software in the world and their relentless will to help
-fellow developers.
-
 ## References
 
 <ol class="nestedList">
     <li>
         <span id="ref-bundle-programming-guide" class="ref">
-            <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html">Bundle Programming Guide (developer.apple.com)</a>
+            <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html">Bundle Programming Guide <small>(developer.apple.com)</small></a>
         </span>
         <ol class="nestedList">
             <li>
@@ -105,29 +98,29 @@ fellow developers.
     </li>
     <li>
         <span id="ref-packaging-with-cpack" class="ref">
-            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">Packaging with CPack (gitlab.kitware.com/cmake)</a>
+            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">Packaging with CPack <small>(gitlab.kitware.com/cmake)</small></a>
         </span>
         <ol class="nestedList">
             <li>
                 <span id="ref-using-cpack-with-cmake" class="ref">
-                    <a herf="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake">Using CPack with CMake</a>
+                    <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake">Using CPack with CMake</a>
                 </span>
             </li>
         </ol>
     </li>
     <li>
         <span id="ref-drag-n-drop-package-generator" class="ref">
-            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">DragNDrop Package generator (gitlab.kitware.com/cmake)</a>
+            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">DragNDrop Package generator <small>(gitlab.kitware.com/cmake)</small></a>
         </span>
     </li>
     <li>
         <span id="ref-cpack-bundle-generator" class="ref">
-            <a href="https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator (cmake.org)</a>
+            <a href="https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator  <small>(cmake.org)</small></a>
         </span>
     </li>
     <li>
         <span class="ref">
-            <a href="https://stackoverflow.com/a/44629910">MACOSX_BUNDLE vs CPACK_BUNDLE</a>
+            <a href="https://stackoverflow.com/a/44629910">MACOSX_BUNDLE vs CPACK_BUNDLE <small>(stackoverflow.com)</small></a>
         </span>
     </li>
 </ol>
