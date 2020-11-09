@@ -15,6 +15,8 @@ every problem I've faced, every reference I've read and every solution I've trie
 
 **This post only reflects my experience solving this problem for Mixxx. For other applications and environments, your mileage my vary.**
 
+At the moment of writing this I was using CMake and CPack 3.18.1.
+
 ## What are macOS bundles?<sup>[[1]](#ref-bundle-programming-guide)</sup>
 
 A bundle is just a directory with a specific structure that
@@ -50,6 +52,9 @@ The *Info.plist* file holds configuration information for the application. macOS
 The *MacOS* directory contains the standalone executable code of the application. In most cases, this directory contains only one binary file: your application's main executable. **However, you can also put additional standalone executables (such as command-line tools) in this directory**.
 
 The *Resources* directory contains all of the application’s resource files. Resources are data files that live outside your application’s executable file like images, icons, sounds, strings files, configuration files, and data files (among others).
+
+### The info.plist
+asdasdsa
 
 ## Generating a bundle with CMake and CPack
 
@@ -95,6 +100,11 @@ We must set these variables before we include CPack in order for them to take ef
                 </span>
             </li>
         </ol>
+    </li>
+        <li>
+        <span id="ref-information-property-list" class="ref">
+            <a href="https://developer.apple.com/documentation/bundleresources/information_property_list">Information Property List <small>(developer.apple.com)</small></a>
+        </span>
     </li>
     <li>
         <span id="ref-packaging-with-cpack" class="ref">
