@@ -215,3 +215,32 @@ Currently looking for a C++ job.
     <td>Universitat Politècnica de Catalunya</td>
   </tr>
 </table>
+
+## Languages
+
+<div class="autoTable">
+  <div>
+    <span>English</span>
+    <div class="meter">
+      <span style="width: 80%"/>
+    </div>
+  </div>
+  <div>
+    <span>Spanish</span>
+    <div class="meter">
+      <span style="width: 100%"/>
+    </div>
+  </div>
+  <div>
+    <span>Catalan</span>
+    <div class="meter">
+      <span style="width: 100%"/>
+    </div>
+  </div>
+  <div>
+    <span>Italian</span>
+    <div class="meter">
+      <span style="width: 10%"/>
+    </div>
+  </div>
+</div>
