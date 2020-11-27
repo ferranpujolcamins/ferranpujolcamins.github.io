@@ -1,19 +1,10 @@
 ---
 layout: post
-title:  "Generating a macOS bundle for Mixxx"
-excludeFromMenu: true
+title:  "Some notes about generating a macOS bundle with CMake"
+excludeFromMenu: false
 ---
 
-<div class="banner">
-This post is still a work in progress
-</div>
-
-[Mixxx](https://mixxx.org/) is an open source Dj software that uses
-[CMake](https://cmake.org/) as its build system. In this post I describe my experience learning about macOS bundles, how CMake deals with them, and solving the problem of generating a macOS bundle for Mixxx.
-This is not a concise step by step guide, but rather an extensive description of everything I've learnt,
-every problem I've faced, every reference I've read and every solution I've tried.
-
-**This post only reflects my experience solving this problem for Mixxx. For other applications and environments, your mileage my vary.**
+This post post is just a bunch of incomplete notes. I found the information to be a bit disseminated and I thought it would be a good idea to put everything togheter in one place. You can find references to the sources.
 
 At the moment of writing this I was using CMake and CPack 3.18.1.
 
@@ -22,7 +13,7 @@ At the moment of writing this I was using CMake and CPack 3.18.1.
 A bundle is just a directory with a specific structure that
 contains executable code and the resources needed by that code.
 The operating system treats such directories in special ways. For example, a macOS
-app is a bundle (i.e. a directory). However, macOS presents you the app
+app is a bundle (i.e. a directory). However, macOS presents the app
 as a single unit, as it was a file, in order to prevent users to accidentally
 modify important resources of the app and breaking it.
 
@@ -53,8 +44,8 @@ The *MacOS* directory contains the standalone executable code of the application
 
 The *Resources* directory contains all of the application’s resource files. Resources are data files that live outside your application’s executable file like images, icons, sounds, strings files, configuration files, and data files (among others).
 
-### The info.plist
-asdasdsa
+### The info.plist<sup>[[2]](#ref-information-property-list)</sup>
+To do.
 
 ## Generating a bundle with CMake and CPack
 
@@ -63,22 +54,22 @@ for each operating system we support.
 
 Just like CMake has several *generators* to write the input files for several build systems,
 CPack ha several *generators* to create different types of packages and installers
-for different platforms<sup>[[2]](#ref-packaging-with-cpack)</sup>.
+for different platforms<sup>[[3]](#ref-packaging-with-cpack)</sup>.
 There are two main generators for macOS bundles: the *DragNDrop* generator and the *Bundle* generator.
 
-The *DragNDrop* generator does not allow multiple executables inside a single bundle; it enforces a 1:1 bundle-to-executable relationship.<sup>[[3]](#ref-drag-n-drop-package-generator)</sup>
+The *DragNDrop* generator does not allow multiple executables inside a single bundle; it enforces a 1:1 bundle-to-executable relationship.<sup>[[4]](#ref-drag-n-drop-package-generator)</sup>
 
-On the other hand, the *Bundle* generator does support multiple executables inside a single bundle. This is the generator we are going to use with Mixxx. The reason being that the [Aoide music library management system](https://gitlab.com/uklotzde/aoide-rs) will probably be integrated with Mixxx in the not so distant future, and this will require Mixxx to ship with a binary for the Aoide server.
+The *Bundle* generator does support multiple executables inside a single bundle.
 
 CPack is a standalone executable that reads a configuration file usually named `CPackConfig.cmake`.
 However, CMake comes with a CPack module, which will automatically generate an
-appropriate CPack configuration file<sup>[[2.1]](#ref-using-cpack-with-cmake)</sup>.
+appropriate CPack configuration file<sup>[[3.1]](#ref-using-cpack-with-cmake)</sup>.
 The only thing we need to do to set it up is to include the module in our CMakeLists.txt:
 ```cmake
 include(CPack)
 ```
 
-In order to use the CPack Bundle generator we need to define three CMake variables<sup>[[4]](#ref-cpack-bundle-generator)</sup>:
+In order to use the CPack Bundle generator we need to define three CMake variables<sup>[[5]](#ref-cpack-bundle-generator)</sup>:
 
 - `CPACK_BUNDLE_NAME`: The bundle name
 - `CPACK_BUNDLE_ICON`: The bundle icon
@@ -125,7 +116,7 @@ We must set these variables before we include CPack in order for them to take ef
     </li>
     <li>
         <span id="ref-cpack-bundle-generator" class="ref">
-            <a href="https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator  <small>(cmake.org)</small></a>
+            <a href="https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator  <small>(cmake.org)</small></a>
         </span>
     </li>
     <li>
