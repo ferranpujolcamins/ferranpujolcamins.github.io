@@ -76,9 +76,11 @@ Now Valgrind will detect that a debugger has connected and it will start your pr
 
 Valgrind will raise a trap signal (SIGTRAP) when it detects a problem. You can then inspect the stack trace, and your usual debugging commands. You can also unleash the power of Valgrind by sending commands to it through CLion's gdb console<sup>[[5]](#ref-valgrind-gdb)</sup>.
 
-### EDIT
+**EDIT**
+
 CLion won't display the output of monitor commands sent to Valgrind's gdbserver.
-https://youtrack.jetbrains.com/issue/IDEA-256947
+
+[https://youtrack.jetbrains.com/issue/IDEA-256947](https://youtrack.jetbrains.com/issue/IDEA-256947)
 
 
 ## Troubleshooting
