@@ -30,6 +30,18 @@ Currently looking for a C++ job.
     </div>
   </div>
   <div>
+    <span>Valgrind</span>
+    <div class="meter">
+      <span style="width: 25%"/>
+    </div>
+  </div>
+    <div>
+    <span>GDB</span>
+    <div class="meter">
+      <span style="width: 25%"/>
+    </div>
+  </div>
+  <div>
     <span>Swift</span>
     <div class="meter">
       <span style="width: 100%"/>
