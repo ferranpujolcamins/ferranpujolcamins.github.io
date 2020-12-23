@@ -1,16 +1,31 @@
 ---
-layout: page
+layout: pageNoFooter
 title: Resume
 permalink: /resume/
 ---
 
-<!-- <div class="banner">
-Currently looking for a C++ job.
-</div> -->
+<div class="resumeHeaderWrapper">
+  <div>
+    <ul class="contact-list">
+      <li class="p-name">
+        {%- if site.author -%}
+          {{ site.author | escape }}
+        {%- else -%}
+          {{ site.title | escape }}
+        {%- endif -%}
+        </li>
+        {%- if site.email -%}
+        <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+        {%- endif -%}
+    </ul>
+    {%- include social.html -%}
+  </div>
+  <p>{{- site.description | escape -}}</p>
+</div>
 
 ## Skills
 
-<div class="autoTable">
+<div class="autoTable3">
   <div>
     <span>C++</span>
     <div class="meter">
@@ -162,6 +177,9 @@ Currently looking for a C++ job.
     </td>
     <td>
       <ul>
+      <li>Moving interquartile mean to calculate BPM from user taps<sup><a href="https://github.com/mixxxdj/mixxx/pull/450">[1]</a></sup></li>
+      <li>UI improvements<sup><a href="https://github.com/mixxxdj/mixxx/pull/917">[1]</a><a href="https://github.com/mixxxdj/mixxx/pull/682">[2]</a><a href="https://github.com/mixxxdj/mixxx/pull/678">[3]</a><a href="https://github.com/mixxxdj/mixxx/pull/674">[4]</a><a href="https://github.com/mixxxdj/mixxx/pull/668">[5]</a><a href="https://github.com/mixxxdj/mixxx/pull/666/">[6]</a></sup></li>
+      <li>Little tweaks to audio effects<sup><a href="https://github.com/mixxxdj/mixxx/pull/1502">[1]</a><a href="https://github.com/mixxxdj/mixxx/pull/733">[2]</a><a href="https://github.com/mixxxdj/mixxx/pull/1260">[3]</a></sup></li>
       <li><a href="https://github.com/mixxxdj/mixxx/pulls?q=is%3Apr+author%3Aferranpujolcamins">And more...</a></li>
       </ul>
     </td>
@@ -173,7 +191,7 @@ Currently looking for a C++ job.
     </td>
     <td>
       <ul>
-      <li>Allow to build a search query with a binary tree of filters and "and" and "or" combinations.<sup><a href="https://gitlab.com/uklotzde/aoide-rs/-/commit/30027b8d0f546a9161a2277149b356892a3e3104">[1]</a></sup></li>
+      <li>Allow to build a search query with a binary tree of filters and "and" and "or" combinations<sup><a href="https://gitlab.com/uklotzde/aoide-rs/-/commit/30027b8d0f546a9161a2277149b356892a3e3104">[1]</a></sup></li>
       <li><a href="https://gitlab.com/uklotzde/aoide-rs/-/commits/development?author=Ferran%20Pujol%20Camins">And more...</a></li>
       </ul>
     </td>
@@ -185,6 +203,21 @@ Currently looking for a C++ job.
     </td>
     <td>
       Project creator
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p><a href="https://github.com/davecom/SwiftGraph">SwiftGraph</a></p>
+      <p>Graph data structures and algorithms library (Swift)</p>
+    </td>
+    <td>
+      <ul>
+      <li>DFS and BFS generalizations<sup><a href="https://github.com/davecom/SwiftGraph/pull/58">[1]</a><a href="https://github.com/davecom/SwiftGraph/pull/57">[2]</a></sup></li>
+      <li>Constructors for star and complete graphs<sup><a href="https://github.com/davecom/SwiftGraph/pull/46">[1]</a><a href="https://github.com/davecom/SwiftGraph/pull/47">[2]</a></sup></li>
+      <li>UniqueElementsGraph and graph union<sup><a href="https://github.com/davecom/SwiftGraph/pull/40">[1]</a></sup></li>
+      <li>Performance improvements<sup><a href="https://github.com/davecom/SwiftGraph/pull/56">[1]</a><a href="https://github.com/davecom/SwiftGraph/pull/53">[2]</a><a href="https://github.com/davecom/SwiftGraph/pull/52">[3]</a><a href="https://github.com/davecom/SwiftGraph/pull/51">[4]</a><a href="https://github.com/davecom/SwiftGraph/pull/49">[5]</a></sup></li>
+      <li><a href="https://github.com/davecom/SwiftGraph/pulls?q=+is%3Apr+author%3Aferranpujolcamins+">And more...</a></li>
+      </ul>
     </td>
   </tr>
   <tr>
@@ -232,21 +265,6 @@ Currently looking for a C++ job.
   </tr>
   <tr>
     <td>
-      <p><a href="https://github.com/davecom/SwiftGraph">SwiftGraph</a></p>
-      <p>Graph data structures and algorithms library (Swift)</p>
-    </td>
-    <td>
-      <ul>
-      <li>DFS and BFS generalizations<sup><a href="https://github.com/davecom/SwiftGraph/pull/58">[1]</a><a href="https://github.com/davecom/SwiftGraph/pull/57">[2]</a></sup></li>
-      <li>Constructors for star and complete graphs<sup><a href="https://github.com/davecom/SwiftGraph/pull/46">[1]</a><a href="https://github.com/davecom/SwiftGraph/pull/47">[2]</a></sup></li>
-      <li>UniqueElementsGraph and graph union<sup><a href="https://github.com/davecom/SwiftGraph/pull/40">[1]</a></sup></li>
-      <li>Performance improvements<sup><a href="https://github.com/davecom/SwiftGraph/pull/56">[1]</a><a href="https://github.com/davecom/SwiftGraph/pull/53">[2]</a><a href="https://github.com/davecom/SwiftGraph/pull/52">[3]</a><a href="https://github.com/davecom/SwiftGraph/pull/51">[4]</a><a href="https://github.com/davecom/SwiftGraph/pull/49">[5]</a></sup></li>
-      <li><a href="https://github.com/davecom/SwiftGraph/pulls?q=+is%3Apr+author%3Aferranpujolcamins+">And more...</a></li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>
       <p><a href="https://github.com/NixOS/nixpkgs">nixpkgs</a></p>
       <p>A collection of software packages for Nix package manager</p>
     </td>
@@ -275,7 +293,7 @@ Currently looking for a C++ job.
 
 ## Languages
 
-<div class="autoTable">
+<div class="autoTable3">
   <div>
     <span>English</span>
     <div class="meter">

@@ -2,7 +2,24 @@ $dark-brand-color: darken($brand-color, 15%);
 $light-brand-color: lighten($brand-color, 35%);
 $neutral-brand-color: lighten(desaturate($brand-color, 40%), 42%);
 
-.autoTable {
+.resumeHeaderWrapper {
+  overflow: hidden;
+}
+
+@media only screen and (min-width: 900px) {
+  .resumeHeaderWrapper > div {
+    padding-right: 3em;
+    float:left;
+  }
+}
+
+.autoTable2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 30px;
+}
+
+.autoTable3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 30px;
@@ -13,7 +30,7 @@ table.innerBorderTable {
   border-style: hidden;
 }
 .innerBorderTable th {
-  background-color: lighten($grey-color-light, 3%);
+  //background-color: lighten($grey-color-light, 3%);
   border: 1px solid darken($grey-color-light, 4%);
   border-bottom-color: darken($grey-color-light, 12%);
 }
