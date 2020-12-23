@@ -276,9 +276,14 @@ permalink: /resume/
   </tr>
 </table>
 
-## Education
+## Education & Training
 
  <table class="innerBorderTable">
+  <tr>
+    <td>May 2017</td>
+    <td>ISTQB Certified Tester Foundation Level</td>
+    <td>ISTQB International Software Testing Qualifications Board</td>
+  </tr>
   <tr>
     <td>2011 - 2019</td>
     <td>Degree in Mathematics (Unfinished)</td>
