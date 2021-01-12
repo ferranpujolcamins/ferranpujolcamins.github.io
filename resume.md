@@ -39,6 +39,12 @@ permalink: /resume/
     </div>
   </div>
   <div>
+    <span>GoogleTest</span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
+  <div>
     <span>Rust</span>
     <div class="meter">
       <span style="width: 50%"/>
