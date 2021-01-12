@@ -2,6 +2,15 @@ $dark-brand-color: darken($brand-color, 15%);
 $light-brand-color: lighten($brand-color, 35%);
 $neutral-brand-color: lighten(desaturate($brand-color, 40%), 42%);
 
+h2::before {
+    display: block;
+    content: "";
+    border-top: .15rem solid $grey-color-light;
+    // width: 4rem;
+    margin: 3rem 0 1rem 0;
+    transform: translateY(-1rem);
+}
+
 .resumeHeaderWrapper {
   overflow: hidden;
 }

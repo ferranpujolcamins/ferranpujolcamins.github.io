@@ -92,8 +92,14 @@ permalink: /resume/
       <span style="width: 25%"/>
     </div>
   </div>
+  <div>
+    <span>SQL</span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
 </div>
-<br/>
+<br>
 
 ## Work experience
 
@@ -102,22 +108,24 @@ permalink: /resume/
  <table class="innerBorderTable">
   <col width="27%">
   <col width="17%">
-   <tr>
-    <td>Jan. 2020 – June 2020</td>
-    <td>Back-end Developer</td>
-    <td>I joined the release tooling team, a newly formed team with the mission to
-    develop a back-end service that automates our apps release process.
-    The service is based
-    on Spring, Hibernate, Kotlin and Arrow using functional programming patterns.</td>
-  </tr>
   <tr>
     <td>Sept. 2018 – Sept. 2020</td>
     <td>iOS Developer</td>
-    <td> The FREENOW driver app follows the
-    <a href="https://github.com/freenowtech/Sensor">Sensor</a> reactive
-    architecture, based on RxSwift.
-    I worked in a cross functional team developing new features and maintaining
-    legacy code. I also developed new features for the <a href="https://github.com/freenowtech/Sensor">Sensor</a> library.</td>
+    <td><p>At FREENOW I developed, tested, released and monitored new key business features that were launched internationally to thousands of drivers.
+    I worked in a cross functional team developing new features and maintaining legacy code.</p>
+    
+    <p>The app is based on the <a href="https://github.com/freenowtech/Sensor">Sensor</a> reactive
+    architecture, based on RxSwift. I fixed bugs and improved and developed new and existing features for the architecture supporting library.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>Jan. 2020 – June 2020</td>
+    <td>Back-end Developer</td>
+    <td><p>I joined the release tooling team, a newly formed team with the mission to
+    develop a back-end service that automates our apps release process.</p>
+
+    <p>I developed the architecture of the service based on Spring, Hibernate, Kotlin and Arrow using functional programming patterns.</p>
+    </td>
   </tr>
 </table>
 
@@ -129,9 +137,9 @@ permalink: /resume/
   <tr>
     <td>Jan. 2018 – June 2018</td>
     <td>iOS Developer</td>
-    <td>The Clubberize app extensively uses location services
-     including geofencing and beacons, Branch.io deep links
-      and push notifications.</td>
+    <td><p>At Clubberize I lead the development of the app. I developed, improved and tested their location services,
+     which use geofencing and beacons, Branch.io deep links
+      and push notifications.</p></td>
   </tr>
 </table>
 
@@ -143,8 +151,8 @@ permalink: /resume/
   <tr>
     <td>Apr. 2016 – Dec. 2018</td>
     <td>iOS Developer</td>
-    <td>At Basetis I worked in several iOS projects for different clients.
-    I also work as QA on a client's project.</td>
+    <td><p>At Basetis I worked in several iOS projects for several clients.
+    I also worked as a QA on an electronic voting project for a client.</p></td>
   </tr>
 </table>
 
@@ -157,6 +165,56 @@ permalink: /resume/
     <td>iOS Developer intern</td>
   </tr>
 </table>
+
+## Education & Training
+
+ <table class="innerBorderTable">
+  <tr>
+    <td>May 2017</td>
+    <td>ISTQB Certified Tester Foundation Level</td>
+    <td>ISTQB International Software Testing Qualifications Board</td>
+  </tr>
+  <tr>
+    <td>2011 - 2019</td>
+    <td>Degree in Mathematics (Unfinished)</td>
+    <td>Universitat Politècnica de Catalunya</td>
+  </tr>
+  <tr>
+    <td>2009 - 2010</td>
+    <td>Degree in Informatics Eng. (1st course)</td>
+    <td>Universitat Politècnica de Catalunya</td>
+  </tr>
+</table>
+
+## Languages
+
+<div class="autoTable3">
+  <div>
+    <span>English</span>
+    <div class="meter">
+      <span style="width: 80%"/>
+    </div>
+  </div>
+  <div>
+    <span>Spanish</span>
+    <div class="meter">
+      <span style="width: 100%"/>
+    </div>
+  </div>
+  <div>
+    <span>Catalan</span>
+    <div class="meter">
+      <span style="width: 100%"/>
+    </div>
+  </div>
+  <div>
+    <span>Italian</span>
+    <div class="meter">
+      <span style="width: 10%"/>
+    </div>
+  </div>
+</div>
+<br>
 
 ## Open source contributions
 
@@ -275,52 +333,3 @@ permalink: /resume/
     </td>
   </tr>
 </table>
-
-## Education & Training
-
- <table class="innerBorderTable">
-  <tr>
-    <td>May 2017</td>
-    <td>ISTQB Certified Tester Foundation Level</td>
-    <td>ISTQB International Software Testing Qualifications Board</td>
-  </tr>
-  <tr>
-    <td>2011 - 2019</td>
-    <td>Degree in Mathematics (Unfinished)</td>
-    <td>Universitat Politècnica de Catalunya</td>
-  </tr>
-  <tr>
-    <td>2009 - 2010</td>
-    <td>Degree in Informatics Eng. (1st course)</td>
-    <td>Universitat Politècnica de Catalunya</td>
-  </tr>
-</table>
-
-## Languages
-
-<div class="autoTable3">
-  <div>
-    <span>English</span>
-    <div class="meter">
-      <span style="width: 80%"/>
-    </div>
-  </div>
-  <div>
-    <span>Spanish</span>
-    <div class="meter">
-      <span style="width: 100%"/>
-    </div>
-  </div>
-  <div>
-    <span>Catalan</span>
-    <div class="meter">
-      <span style="width: 100%"/>
-    </div>
-  </div>
-  <div>
-    <span>Italian</span>
-    <div class="meter">
-      <span style="width: 10%"/>
-    </div>
-  </div>
-</div>
