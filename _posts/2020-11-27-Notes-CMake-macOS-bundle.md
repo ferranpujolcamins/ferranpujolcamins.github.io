@@ -82,41 +82,42 @@ We must set these variables before we include CPack in order for them to take ef
 <ol class="nestedList">
     <li>
         <span id="ref-bundle-programming-guide" class="ref">
-            <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/Introduction/Introduction.html">Bundle Programming Guide <small>(developer.apple.com)</small></a>
+            <a href="https://web.archive.org/web/20210118140759/https%3A%2F%2Fdeveloper.apple.com%2Flibrary%2Farchive%2Fdocumentation%2FCoreFoundation%2FConceptual%2FCFBundles%2FIntroduction%2FIntroduction.html">Bundle Programming Guide <small>(developer.apple.com)</small></a>
         </span>
         <ol class="nestedList">
             <li>
                 <span id="ref-application-bundles" class="ref">
-                    <a href="https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW13">Application Bundles</a>
+                    <a href="https://web.archive.org/web/20210118141233/https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW13">Application Bundles</a>
+                    
                 </span>
             </li>
         </ol>
     </li>
         <li>
         <span id="ref-information-property-list" class="ref">
-            <a href="https://developer.apple.com/documentation/bundleresources/information_property_list">Information Property List <small>(developer.apple.com)</small></a>
+            <a href="https://web.archive.org/web/20210118142123/https://developer.apple.com/documentation/bundleresources/information_property_list">Information Property List <small>(developer.apple.com)</small></a>
         </span>
     </li>
     <li>
         <span id="ref-packaging-with-cpack" class="ref">
-            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">Packaging with CPack <small>(gitlab.kitware.com/cmake)</small></a>
+            <a href="https://web.archive.org/web/20210118141434/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">Packaging with CPack <small>(gitlab.kitware.com/cmake)</small></a>
         </span>
         <ol class="nestedList">
             <li>
                 <span id="ref-using-cpack-with-cmake" class="ref">
-                    <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake">Using CPack with CMake</a>
+                    <a href="https://web.archive.org/web/20210118141434/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake">Using CPack with CMake</a>
                 </span>
             </li>
         </ol>
     </li>
     <li>
         <span id="ref-drag-n-drop-package-generator" class="ref">
-            <a href="https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">DragNDrop Package generator <small>(gitlab.kitware.com/cmake)</small></a>
+            <a href="https://web.archive.org/web/20210118141514/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">DragNDrop Package generator <small>(gitlab.kitware.com/cmake)</small></a>
         </span>
     </li>
     <li>
         <span id="ref-cpack-bundle-generator" class="ref">
-            <a href="https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator  <small>(cmake.org)</small></a>
+            <a href="https://web.archive.org/web/20210118141717/https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator  <small>(cmake.org)</small></a>
         </span>
     </li>
     <li>

@@ -115,22 +115,22 @@ For your convenience, Valgrind prints is pid on the console when started in vgdb
 <ol class="nestedList">
     <li>
         <span id="ref-clion-valgrind" class="ref">
-            <a href="https://www.jetbrains.com/help/clion/memory-profiling-with-valgrind.html">CLion Valgrind memcheck <small>(www.jetbrains.com)</small></a>
+            <a href="https://web.archive.org/web/20210118142610/https://www.jetbrains.com/help/clion/memory-profiling-with-valgrind.html">CLion Valgrind memcheck <small>(www.jetbrains.com)</small></a>
         </span>
     </li>
     <li>
         <span id="ref-debugging-your-program-using-valgrind-gdbserver" class="ref">
-            <a href="https://www.valgrind.org/docs/manual/manual-core-adv.html#manual-core-adv.gdbserver">Debugging your program using Valgrind gdbserver and GDB <small>(www.valgrind.org)</small></a>
+            <a href="https://web.archive.org/web/20210118142801/https://www.valgrind.org/docs/manual/manual-core-adv.html#manual-core-adv.gdbserver">Debugging your program using Valgrind gdbserver and GDB <small>(www.valgrind.org)</small></a>
         </span>
     </li>
     <li>
         <span id="ref-clion-gdb-remote-debug" class="ref">
-            <a href="https://www.jetbrains.com/help/clion/remote-debug.html">CLion GDB Remote Debug <small>(www.jetbrains.com)</small></a>
+            <a href="https://web.archive.org/web/20210118143028/https://www.jetbrains.com/help/clion/remote-debug.html">CLion GDB Remote Debug <small>(www.jetbrains.com)</small></a>
         </span>
     </li>
     <li>
         <span id="ref-gdb-connecting-to-a-remote-target" class="ref">
-            <a href="https://sourceware.org/gdb/current/onlinedocs/gdb/Connecting.html">Connecting to a Remote Target <small>(sourceware.org/gdb)</small></a>
+            <a href="https://web.archive.org/web/20210118143611/https://sourceware.org/gdb/current/onlinedocs/gdb/Connecting.html">Connecting to a Remote Target <small>(sourceware.org/gdb)</small></a>
         </span>
     </li>
     <li>
