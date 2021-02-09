@@ -355,16 +355,16 @@ class Branch: public Tree {
 
 <ol class="nestedList">
     <li id="ref-quantified-types-as-products-and-sums" class="ref">
-        <a href="https://en.wikibooks.org/wiki/Haskell/Existentially_quantified_types#Quantified_Types_as_Products_and_Sums">Quantified types as products and sums <small>(en.wikibooks.org/wiki/Haskell)</small></a>
+        <a href="https://en.wikibooks.org/wiki/Haskell/Existentially_quantified_types#Quantified_Types_as_Products_and_Sums">Quantified types as products and sums</a> <small>(en.wikibooks.org/wiki/Haskell)</small>
     </li>
     <li id="ref-existential-type-in-rust" class="ref">
-        <a href="https://varkor.github.io/blog/2018/07/03/existential-types-in-rust.html">Existential types in Rust <small>(varkor.github.io)</small></a>
+        <a href="https://varkor.github.io/blog/2018/07/03/existential-types-in-rust.html">Existential types in Rust</a> <small>(varkor.github.io)</small>
     </li>
     <li id="ref-oop-vs-type-classes" class="ref">
-        <a href="https://wiki.haskell.org/OOP_vs_type_classes#OO_class_always_corresponds_to_a_haskell_class_.2B_a_related_haskell_existential_.28John_Meacham.29">OOP vs type classes <small>(wiki.haskell.org)</small></a>
+        <a href="https://wiki.haskell.org/OOP_vs_type_classes#OO_class_always_corresponds_to_a_haskell_class_.2B_a_related_haskell_existential_.28John_Meacham.29">OOP vs type classes</a> <small>(wiki.haskell.org)</small>
     </li>
     <li id="ref-the-joys-and-pains-of-unrestricted-unions" class="ref">
-        <a href="https://faouellet.github.io/unrestricted-unions/">The joys and pains of unrestricted unions <small>(faouellet.github.io)</small></a>
+        <a href="https://faouellet.github.io/unrestricted-unions/">The joys and pains of unrestricted unions</a> <small>(faouellet.github.io)</small>
     </li>
 </ol>
 
