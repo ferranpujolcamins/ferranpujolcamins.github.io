@@ -82,7 +82,7 @@ We must set these variables before we include CPack in order for them to take ef
 <ol class="nestedList">
     <li>
         <span id="ref-bundle-programming-guide" class="ref">
-            <a href="https://web.archive.org/web/20210118140759/https%3A%2F%2Fdeveloper.apple.com%2Flibrary%2Farchive%2Fdocumentation%2FCoreFoundation%2FConceptual%2FCFBundles%2FIntroduction%2FIntroduction.html">Bundle Programming Guide <small>(developer.apple.com)</small></a>
+            <a href="https://web.archive.org/web/20210118140759/https%3A%2F%2Fdeveloper.apple.com%2Flibrary%2Farchive%2Fdocumentation%2FCoreFoundation%2FConceptual%2FCFBundles%2FIntroduction%2FIntroduction.html">Bundle Programming Guide</a> <small>(developer.apple.com)</small>
         </span>
         <ol class="nestedList">
             <li>
@@ -95,12 +95,12 @@ We must set these variables before we include CPack in order for them to take ef
     </li>
         <li>
         <span id="ref-information-property-list" class="ref">
-            <a href="https://web.archive.org/web/20210118142123/https://developer.apple.com/documentation/bundleresources/information_property_list">Information Property List <small>(developer.apple.com)</small></a>
+            <a href="https://web.archive.org/web/20210118142123/https://developer.apple.com/documentation/bundleresources/information_property_list">Information Property List</a> <small>(developer.apple.com)</small>
         </span>
     </li>
     <li>
         <span id="ref-packaging-with-cpack" class="ref">
-            <a href="https://web.archive.org/web/20210118141434/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">Packaging with CPack <small>(gitlab.kitware.com/cmake)</small></a>
+            <a href="https://web.archive.org/web/20210118141434/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack">Packaging with CPack</a> <small>(gitlab.kitware.com/cmake)</small>
         </span>
         <ol class="nestedList">
             <li>
@@ -112,17 +112,17 @@ We must set these variables before we include CPack in order for them to take ef
     </li>
     <li>
         <span id="ref-drag-n-drop-package-generator" class="ref">
-            <a href="https://web.archive.org/web/20210118141514/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">DragNDrop Package generator <small>(gitlab.kitware.com/cmake)</small></a>
+            <a href="https://web.archive.org/web/20210118141514/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only">DragNDrop Package generator</a> <small>(gitlab.kitware.com/cmake)</small>
         </span>
     </li>
     <li>
         <span id="ref-cpack-bundle-generator" class="ref">
-            <a href="https://web.archive.org/web/20210118141717/https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator  <small>(cmake.org)</small></a>
+            <a href="https://web.archive.org/web/20210118141717/https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html">CPack Bundle Generator</a>  <small>(cmake.org)</small>
         </span>
     </li>
     <li>
         <span class="ref">
-            <a href="https://stackoverflow.com/a/44629910">MACOSX_BUNDLE vs CPACK_BUNDLE <small>(stackoverflow.com)</small></a>
+            <a href="https://stackoverflow.com/a/44629910">MACOSX_BUNDLE vs CPACK_BUNDLE</a> <small>(stackoverflow.com)</small>
         </span>
     </li>
 </ol>

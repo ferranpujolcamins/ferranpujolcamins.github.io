@@ -114,6 +114,20 @@ ol.nestedList li {
   display: block
 }
 ol.nestedList li:before {
-  content: counters(item, ".") ". ";
+  content: counters(item, ".", decimal) ". ";
   counter-increment: item
+}
+
+ol.nestedList.letterList li:before {
+  content: counters(item, ".", lower-alpha) ". ";
+  counter-increment: item
+}
+
+ol.letterList {
+  list-style-type: lower-alpha;
+}
+
+// Nested lists
+ol.spacedList li {
+  margin-bottom: 1em;
 }
