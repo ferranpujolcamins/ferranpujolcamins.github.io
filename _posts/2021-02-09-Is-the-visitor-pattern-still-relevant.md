@@ -287,14 +287,26 @@ It turns out that the visitor pattern was develop to cope with the lack of suppo
 
 ### Modern C++
 
-As you might have guessed by my usage of the past tense in the previous section, nowadays C++ has support for safe sum types! Since C++17 we have `std::variant`.
+As you might have guessed by my usage of the past tense in the previous section, nowadays C++ has support for safe sum types! Since C++17 we have `std::variant`. Thanks to the [`visit`](https://en.cppreference.com/w/cpp/utility/variant/visit) function (and some obscure template meta-programming) we can handle each case of a variant like this:
 
-So, from my point of view, as of C++17, the answer to the question
+```c++
+std::variant<int, long, double, std::string> v = ...;
+
+std::visit(overloaded {
+            [](double arg) { std::cout << std::fixed << arg << ' '; },
+            [](const std::string& arg) { std::cout << std::quoted(arg) << ' '; },
+            [](auto arg) { std::cout << arg << ' '; }, // "default" case
+        }, v);
+```
+
+However, this solution is far from perfect. It's not totally straightforward (template meta-programming, remember?). For example, if you forget to add a lambda for a case, the compiler spits a long error that apparently doesn't have anything to do with a missing case.
+
+Even though, from my point of view, as of C++17, the answer to the question
 > Is the visitor pattern still relevant?
 
 is **no**. 
 
-99% of times, there's no reason to us the visitor pattern (other than dealing with legacy code)<sup>[[d]](#footnote-d)</sup>.
+99% of times, there's no reason to use the visitor pattern (other than dealing with legacy code)<sup>[[d]](#footnote-d)</sup>.
 
 
 ## Final thoughts
@@ -360,9 +372,7 @@ class Branch: public Tree {
 
 - [The visitor pattern is essentially the same thing as Church encoding](https://www.haskellforall.com/2021/01/the-visitor-pattern-is-essentially-same.html) <small>(haskellforall.com)</small>
 - [Visitor as a sum type](https://blog.ploeh.dk/2018/06/25/visitor-as-a-sum-type/) <small>(blog.ploeh.dk)</small>
-- [Tagged union](https://en.wikipedia.org/wiki/Tagged_union) <small>(en.wikipedia.org)</small>
 - [Simple Algebraic Data Types](https://bartoszmilewski.com/2015/01/13/simple-algebraic-data-types/) <small>(bartoszmilewski.com)</small>
 - [Sum Types Are Coming: What You Should Know](https://chadaustin.me/2015/07/sum-types/) <small>(chadaustin.me)</small>
 - [Why are Haskell algebraic data types “closed”?](https://stackoverflow.com/questions/870919/why-are-haskell-algebraic-data-types-closed) 
 <small>(stackoverflow.com)</small>
-- [std::visit is everything wrong with modern C++](https://bitbashing.io/std-visit.html) <small>(bitbashing.io)</small>
