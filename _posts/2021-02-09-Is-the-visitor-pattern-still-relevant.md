@@ -31,9 +31,9 @@ So we want to know the specific runtime type of an object under an interface. Ho
 
 The naive solution to this problem is to add a virtual method to the base class of our objects for each operation that needs to
 know what is the specific runtime type of our objects. This is problematic because for each such operation
-we need to add a new method to **each** subclass of our base class. This brakes the [open-closed principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle): we need to modify
+we need to add a new method to **each** subclass of our base class. This breaks the [open-closed principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle): we need to modify
 our classes each time we want to add an external operation that works on them, so our classes can't be closed for modification.
-It also brakes the [dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle), since our classes need to depend on every concrete operation.
+It also breaks the [dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle), since our classes need to depend on every concrete operation.
 
 Another tempting approach is to use `dynamic_cast`. As we'll see on the next section, the visitor pattern forces us to add one virtual method to our class hierarchy. Although this is not too bad, with `dynamic_cast` we can do even better: we don't need to modify our class hierarchy at all.
 The main drawback of `dynamic_cast` is performance: it's slower than the two virtual calls we need for the visitor pattern. The usage of `dynamic_cast` instead of the visitor pattern is highly despised on the internet. However, in my opinion, if performance is not an issue it's a perfectly valid solution.
@@ -301,7 +301,7 @@ std::visit(overloaded {
 
 However, this solution is far from perfect. It's not totally straightforward (template meta-programming, remember?). For example, if you forget to add a lambda for a case, the compiler spits a long error that apparently doesn't have anything to do with a missing case.
 
-Even though, from my point of view, as of C++17, the answer to the question
+Nonetheless, from my point of view, as of C++17, the answer to the question
 > Is the visitor pattern still relevant?
 
 is **no**. 
@@ -326,7 +326,7 @@ Therefore, we must not blindly use design patterns (or any other established doc
         In these situations the <a href="https://en.wikipedia.org/wiki/Iterator_pattern">iterator pattern</a> comes in handy.
     </li>
     <li id="footnote-b" class="ref">
-        These two problems were intermixed probably because with some data structures you need to know the runtime type of an object
+        These two problems were intermixed probably because for some data structures you need to know the runtime type of an object
         in order to know what is the next object you should visit. For example, consider the following binary tree representation: 
         <pre><code>// Abstract class
 class Tree {};
