@@ -18,6 +18,10 @@ permalink: /resume/
         <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
         {%- endif -%}
     </ul>
+    <div class="location">
+      <img src="/assets/images/Home_Icon.svg" alt="home icon" width="16" height="16"/>
+      Barcelona, Spain
+    </div>
     {%- include social.html -%}
   </div>
   <p>{{- site.description | escape -}}</p>
