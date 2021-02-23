@@ -1,6 +1,12 @@
 $dark-brand-color: darken($brand-color, 15%);
 $light-brand-color: lighten($brand-color, 35%);
 $neutral-brand-color: lighten(desaturate($brand-color, 40%), 42%);
+$dark-neutral-brand-color: darken(desaturate($brand-color, 20%), 15%);
+
+em {
+  font-weight: bold;
+  font-style: normal;
+}
 
 h2::before {
     display: block;
@@ -47,29 +53,34 @@ table.innerBorderTable {
   border: 1px solid $grey-color-light;
 }
 
+th {
+  font-weight: normal;
+  font-style: italic;
+}
+
 
 .meter {
-    height: 5px;  /* Can be anything */
+    height: 4px;  /* Can be anything */
 	  position: relative;
     border-radius: 8px;
     background: #ffffff;
-    box-shadow: inset 4px 4px 8px #dbdbdb, 
-                inset -4px -4px 8px #ffffff;
+    box-shadow: inset 3px 3px 8px #dbdbdb, 
+                inset -3px -3px 8px #ffffff;
 }
   
 .meter > span {
     display: block;
     height: 100%;
     border-radius: 8px;
-    background-color: $dark-brand-color;
+    background-color: $dark-neutral-brand-color;
     background-image: linear-gradient(
       center bottom,
       $dark-brand-color 37%,
       white 69%
     );
     box-shadow: 
-      inset 0 2px 4px  rgba(255,255,255,0.63),
-      inset 0 -2px 4px rgba(0,0,0,0.4);
+      inset 0 2px 3px  rgba(255,255,255,0.63),
+      inset 0 -2px 3px rgba(0,0,0,0.4);
     position: relative;
     overflow: hidden;
 }

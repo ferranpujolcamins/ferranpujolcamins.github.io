@@ -26,82 +26,90 @@ permalink: /resume/
 ## Skills
 
 <div class="autoTable3">
-  <div>
-    <span>C++</span>
+  <div class="skill">
+    <span><em>C++</em></span>
     <div class="meter">
       <span style="width: 50%"/>
     </div>
   </div>
-  <div>
-    <span>Qt</span>
+  <div class="skill">
+    <span><em>Qt</em></span>
     <div class="meter">
       <span style="width: 50%"/>
     </div>
   </div>
-  <div>
-    <span>GoogleTest</span>
+  <div class="skill">
+    <span><em>GoogleTest</em></span>
     <div class="meter">
       <span style="width: 50%"/>
     </div>
   </div>
-  <div>
-    <span>Rust</span>
+  <div class="skill">
+    <span><em>Rust</em></span>
     <div class="meter">
       <span style="width: 50%"/>
     </div>
   </div>
-  <div>
-    <span>Valgrind</span>
+  <div class="skill">
+    <span><em>Valgrind</em></span>
     <div class="meter">
       <span style="width: 25%"/>
     </div>
   </div>
-    <div>
-    <span>GDB</span>
+  <div class="skill">
+    <span><em>GDB</em></span>
     <div class="meter">
       <span style="width: 25%"/>
     </div>
   </div>
-  <div>
+  <div class="skill">
+    <span><em>SQL</em></span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+<div class="autoTable3">
+  <div class="skill">
     <span>Swift</span>
     <div class="meter">
       <span style="width: 100%"/>
     </div>
   </div>
-  <div>
+  <div class="skill">
     <span>iOS</span>
     <div class="meter">
       <span style="width: 100%"/>
     </div>
   </div>
-  <div>
+  <div class="skill">
     <span>Objective-C</span>
     <div class="meter">
       <span style="width: 100%"/>
     </div>
   </div>
-  <div>
+</div>
+<br>
+<br>
+<div class="autoTable3">
+  <div class="skill">
     <span>Functional programming</span>
     <div class="meter">
       <span style="width: 50%"/>
     </div>
   </div>
-  <div>
+  <div class="skill">
     <span>Haskell</span>
     <div class="meter">
       <span style="width: 25%"/>
     </div>
   </div>
-  <div>
+  <div class="skill">
     <span>Category theory</span>
     <div class="meter">
       <span style="width: 25%"/>
-    </div>
-  </div>
-  <div>
-    <span>SQL</span>
-    <div class="meter">
-      <span style="width: 50%"/>
     </div>
   </div>
 </div>
@@ -116,7 +124,7 @@ permalink: /resume/
   <col width="17%">
   <tr>
     <td>Sept. 2018 – Sept. 2020</td>
-    <td>iOS Developer</td>
+    <td class="role">iOS Developer</td>
     <td><p>At FREENOW I developed, tested, released and monitored new key business features that were launched internationally to thousands of drivers.
     I worked in a cross functional team developing new features and maintaining legacy code.</p>
     
@@ -126,7 +134,7 @@ permalink: /resume/
   </tr>
   <tr>
     <td>Jan. 2020 – June 2020</td>
-    <td>Back-end Developer</td>
+    <td><em>Back-end Developer</em></td>
     <td><p>I joined the release tooling team, a newly formed team with the mission to
     develop a back-end service that automates our apps release process.</p>
 
@@ -157,7 +165,7 @@ permalink: /resume/
   <tr>
     <td>Apr. 2016 – Dec. 2018</td>
     <td>iOS Developer</td>
-    <td><p>At Basetis I worked in several iOS projects for several clients.
+    <td><p>At Basetis I worked on several iOS projects for several clients.
     I also worked as a QA on an electronic voting project for a client.</p></td>
   </tr>
 </table>
@@ -177,12 +185,12 @@ permalink: /resume/
  <table class="innerBorderTable">
   <tr>
     <td>May 2017</td>
-    <td>ISTQB Certified Tester Foundation Level</td>
+    <td><em>ISTQB Certified Tester Foundation Level</em></td>
     <td>ISTQB International Software Testing Qualifications Board</td>
   </tr>
   <tr>
     <td>2011 - 2019</td>
-    <td>Degree in Mathematics (Unfinished)</td>
+    <td><em>Degree in Mathematics</em> (Unfinished)</td>
     <td>Universitat Politècnica de Catalunya</td>
   </tr>
   <tr>
@@ -196,7 +204,7 @@ permalink: /resume/
 
 <div class="autoTable3">
   <div>
-    <span>English</span>
+    <span><em>English</em></span>
     <div class="meter">
       <span style="width: 80%"/>
     </div>
@@ -237,7 +245,7 @@ permalink: /resume/
   <tr>
     <td>
       <p><a href="https://www.mixxx.org">Mixxx</a></p>
-      <p>Dj software (C++)</p>
+      <p><em>Dj software (C++)</em></p>
     </td>
     <td>
       <ul>
@@ -251,7 +259,7 @@ permalink: /resume/
   <tr>
     <td>
       <p><a href="https://gitlab.com/uklotzde/aoide-rs/">Aoide</a></p>
-      <p>A distributed music library management system (Rust)</p>
+      <p><em>A distributed music library management system (Rust)</em></p>
     </td>
     <td>
       <ul>
