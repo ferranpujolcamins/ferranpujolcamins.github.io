@@ -149,7 +149,7 @@ permalink: /resume/
   <col width="27%">
   <col width="17%">
   <tr>
-    <td>Jan. 2018 – June 2018</td>
+    <td>Jan. 2019 – June 2019</td>
     <td>iOS Developer</td>
     <td><p>At Clubberize I lead the development of the app. I developed, improved and tested their location services,
      which use geofencing and beacons, Branch.io deep links
