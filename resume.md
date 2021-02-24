@@ -49,6 +49,12 @@ permalink: /resume/
     </div>
   </div>
   <div class="skill">
+    <span><em>CMake</em></span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
+  <div class="skill">
     <span><em>Rust</em></span>
     <div class="meter">
       <span style="width: 50%"/>
@@ -64,6 +70,12 @@ permalink: /resume/
     <span><em>GDB</em></span>
     <div class="meter">
       <span style="width: 25%"/>
+    </div>
+  </div>
+  <div class="skill">
+    <span><em>Git</em></span>
+    <div class="meter">
+      <span style="width: 100%"/>
     </div>
   </div>
   <div class="skill">
@@ -284,7 +296,7 @@ permalink: /resume/
   <tr>
     <td>
       <p><a href="https://github.com/davecom/SwiftGraph">SwiftGraph</a></p>
-      <p>Graph data structures and algorithms library (Swift)</p>
+      <p><em>Graph data structures and algorithms library (Swift)</em></p>
     </td>
     <td>
       <ul>
@@ -303,7 +315,7 @@ permalink: /resume/
     </td>
     <td>
       <ul>
-      <li>Rank-N polymorphism documentation<sup><a href="https://bow-swift.io/docs/fp-concepts/rank-n-polymorphism/">[1]</a><a href="https://github.com/bow-swift/bow/pull/622">[2]</a></sup></li>
+      <li><em>Rank-N polymorphism documentation</em><sup><a href="https://bow-swift.io/docs/fp-concepts/rank-n-polymorphism/">[1]</a><a href="https://github.com/bow-swift/bow/pull/622">[2]</a></sup></li>
       <li>New Exists type encoding the notion of existential type used to improve Coyoneda implementation<sup><a href="https://github.com/bow-swift/bow/pull/623">[1]</a></sup></li>
       <li>Program type for free-er monads<sup><a href="https://github.com/bow-swift/bow/pull/634">[1]</a></sup></li>
       <li>Multi-way tree data type and its usual typeclass instances<sup><a href="https://github.com/bow-swift/bow/pull/626">[1]</a></sup></li>
