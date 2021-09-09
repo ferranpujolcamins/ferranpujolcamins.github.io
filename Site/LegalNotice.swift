@@ -1,6 +1,6 @@
 import HTML
 
-struct LegalNotice: HtmlComponent {
+struct LegalNotice: HtmlFragment {
     var content: HtmlProtocol {
         div {
             a(href: "http://creativecommons.org/licenses/by-sa/4.0/") {

@@ -1,6 +1,6 @@
 import HTML
 
-struct Footer: HtmlComponent {
+struct Footer: HtmlFragment {
     let contactInfo: Html
     let description: Html
     let legalNotice: Html

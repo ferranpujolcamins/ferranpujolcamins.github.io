@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Debugging your program using Valgrind and CLion on Linux | Ferran Pujol Camins</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Debugging your program using Valgrind and CLion on Linux" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="CLion has a Valgrind integration[1] offering a convenient way to analyse your program with Valgrind and also a nice interface to easily inspect the results." />
+<meta property="og:description" content="CLion has a Valgrind integration[1] offering a convenient way to analyse your program with Valgrind and also a nice interface to easily inspect the results." />
+<link rel="canonical" href="http://localhost:4000/2020/12/03/debugging-your-program-using-valgrind-and-clion.html" />
+<meta property="og:url" content="http://localhost:4000/2020/12/03/debugging-your-program-using-valgrind-and-clion.html" />
+<meta property="og:site_name" content="Ferran Pujol Camins" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-03T00:00:00+01:00" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/12/03/debugging-your-program-using-valgrind-and-clion.html"},"headline":"Debugging your program using Valgrind and CLion on Linux","dateModified":"2020-12-03T00:00:00+01:00","datePublished":"2020-12-03T00:00:00+01:00","url":"http://localhost:4000/2020/12/03/debugging-your-program-using-valgrind-and-clion.html","description":"CLion has a Valgrind integration[1] offering a convenient way to analyse your program with Valgrind and also a nice interface to easily inspect the results.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Ferran Pujol Camins" /></head>
+<body><header class="site-header">
+
+    <div class="wrapper"><a class="site-title" rel="author" href="/">Ferran Pujol Camins</a><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewBox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+              </svg>
+            </span>
+          </label>
+  
+          <div class="trigger"><a class="page-link" href="/resume/">Resume</a></div>
+        </nav></div>
+  </header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Debugging your program using Valgrind and CLion on Linux</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-12-03T00:00:00+01:00" itemprop="datePublished">Dec 3, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><a href="https://www.jetbrains.com/clion/">CLion</a> has a <a href="https://valgrind.org/">Valgrind</a> integration<sup><a href="#ref-clion-valgrind">[1]</a></sup> offering a convenient way to analyse your program with Valgrind and also a nice interface to easily inspect the results.</p>
+
+<p>However, sometimes it’s hard to spot the source of your problem only by looking at Valgrind reports: <em>Ok, I’m accessing a <a href="https://en.wikipedia.org/wiki/Dangling_pointer">Dangling pointer</a> on this method. But, what instance of my class is actually causing the problem? If only I could set a breakpoint where the invalid read happens…</em>.</p>
+
+<p>Fortunately, it’s possible to debug a program running under Valgrind<sup><a href="#ref-debugging-your-program-using-valgrind-gdbserver">[2]</a></sup>. The bad news is that CLion does not support this feature out of the box. But don’t worry, it’s not hard to properly configure CLion to be able to do this.</p>
+
+<p>In this post I’ll show you how you can configure the CLion debugger to debug a program running under Valgrind. Only a few steps are required.</p>
+
+<h2 id="configure-valgrind-on-clion1">Configure Valgrind on CLion<sup><a href="#ref-clion-valgrind">[1]</a></sup></h2>
+
+<p>To be able to use Valgrind with CLion we first need to install it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install valgrind
+</code></pre></div></div>
+
+<p>Now we need to configure CLion to launch Valgrind in vgdb mode. In vgdb mode, Valgrind will start a gdbserver debugging our program under Valgrind.</p>
+
+<p>Open CLion settings and navigate to <strong>Build, Execution, Deployment &gt; Dynamic Analysis Tools &gt; Valgrind</strong>.</p>
+
+<p>Append the following options to the existing <strong>Analysis options</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>--vgdb=yes --vgdb-error=0
+</code></pre></div></div>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/clion-valgrind-configuration.png" alt="Configuring Valgrind on CLion" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">--vgdb=yes</code> enables the Valgrind gdbserver. <code class="language-plaintext highlighter-rouge">--vgdb-error=0</code> tells Valgrind to pause the debugging session so we have time to launch a remote gdb session as described below.</p>
+
+<h2 id="create-a-clion-configuration-to-debug-the-valgrind-gdbserver3">Create a CLion configuration to debug the Valgrind gdbserver<sup><a href="#ref-clion-gdb-remote-debug">[3]</a></sup></h2>
+
+<p>We need to create a CLion debug configuration to connect to the gdbserver that Valgrind will create.</p>
+
+<p>Go to <strong>Run &gt; Edit Configurations…</strong></p>
+
+<p>Create a new <strong>GDB Remote Debug</strong> configuration.</p>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/creating-gdb-remote-debug-configuration.png" alt="Creating a GDB Remote Debug configuration" /></p>
+
+<p>Name the configuration something like <strong>Valgrind gdb</strong></p>
+
+<p>On the <strong>‘target remote’ args</strong> field write <code class="language-plaintext highlighter-rouge">| /usr/bin/vgdb</code>. The pipe character is important<sup><a href="#ref-debugging-your-program-using-valgrind-gdbserver">[2]</a></sup><sup><a href="#ref-gdb-connecting-to-a-remote-target">[4]</a></sup>.</p>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/configuring-gdb-remote-debug-configuration.png" alt="Configuring the GDB Remote Debug configuration" /></p>
+
+<h2 id="debugging-your-program-under-valgrind">Debugging your program under Valgrind</h2>
+
+<p>Now you are ready to debug your program under Valgrind.</p>
+
+<p>Select the configuration of the program you want to debug and run it with Valgrind memcheck.</p>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/run-valgrind.png" alt="Run Valgrind" /></p>
+
+<p>Valgrind now waits for a debugger to connect before starting your program.</p>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/launched-valgrind.png" alt="Just launched Valgrind" /></p>
+
+<p><strong>Without stopping the valgrind process</strong>, select the GDB Remote Debug you created and run it in debug mode.</p>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/debug-program.png" alt="Start Debugger" /></p>
+
+<p>Now Valgrind will detect that a debugger has connected and it will start your program. On the Run tab you can see the output of the program under analysis. You’ll see there the Valgrind report once the program stops.</p>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/run-tab.png" alt="Run tab" /></p>
+
+<p>On the Debug tab you have your usual debug controls.</p>
+
+<p><img src="/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/debug-tab.png" alt="Debug tab" /></p>
+
+<p>Valgrind will raise a trap signal (SIGTRAP) when it detects a problem. You can then inspect the stack trace, and your usual debugging commands. You can also unleash the power of Valgrind by sending commands to it through CLion’s gdb console<sup><a href="#ref-valgrind-gdb">[5]</a></sup>.</p>
+
+<p><strong>EDIT</strong></p>
+
+<p>CLion won’t display the output of monitor commands sent to Valgrind’s gdbserver.</p>
+
+<p><a href="https://youtrack.jetbrains.com/issue/IDEA-256947">https://youtrack.jetbrains.com/issue/IDEA-256947</a></p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="regular-valgrind-analysis">Regular Valgrind analysis</h3>
+
+<p>We just configured Valgrind to wait for a gdb debugger before starting your program. If you want to run a regular Valgrind analysis without the debugger, you’ll need to edit the CLion Valgrind configuration again and set the vgdb option back to <em>no</em>: <code class="language-plaintext highlighter-rouge">--vgdb=no</code>.</p>
+
+<h3 id="remote-communication-error">Remote communication error</h3>
+
+<p>You might encounter the following error when debugging with the GDB Remote Debug configuration:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>com.jetbrains.cidr.execution.debugger.backend.gdb.GDBDriver$GDBCommandException: Remote communication error.  Target disconnected.: Connection reset by peer.
+Debugger disconnected
+</code></pre></div></div>
+
+<p>Usually the problem is that there are more than one instances of Valgrind running and CLion does not know which one it should connect to.</p>
+
+<p>The easiest solution is to stop all CLion processes, use your operating system task manager to kill any running instances of Valgrind and try again. On an x64 linux computer the process will be named <strong>memcheck-amd64-</strong>.</p>
+
+<p>If you really need to have several instances of Valgrind running at the same time, you can instruct CLion to connect to a particular one by editing the GDB Remote Debug configuration and appending the pid to the <strong>‘target remote’ args</strong> command like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>| /usr/bin/vgdb --pid=63077
+</code></pre></div></div>
+
+<p>Note that you will need to edit your configuration and change the pid number every time.</p>
+
+<p>For your convenience, Valgrind prints is pid on the console when started in vgdb mode.</p>
+
+<h2 id="references">References</h2>
+
+<ol class="nestedList">
+    <li>
+        <span id="ref-clion-valgrind" class="ref">
+            <a href="https://web.archive.org/web/20210118142610/https://www.jetbrains.com/help/clion/memory-profiling-with-valgrind.html">CLion Valgrind memcheck</a> <small>(jetbrains.com)</small>
+        </span>
+    </li>
+    <li>
+        <span id="ref-debugging-your-program-using-valgrind-gdbserver" class="ref">
+            <a href="https://web.archive.org/web/20210118142801/https://www.valgrind.org/docs/manual/manual-core-adv.html#manual-core-adv.gdbserver">Debugging your program using Valgrind gdbserver and GDB</a> <small>(valgrind.org)</small>
+        </span>
+    </li>
+    <li>
+        <span id="ref-clion-gdb-remote-debug" class="ref">
+            <a href="https://web.archive.org/web/20210118143028/https://www.jetbrains.com/help/clion/remote-debug.html">CLion GDB Remote Debug</a> <small>(jetbrains.com)</small>
+        </span>
+    </li>
+    <li>
+        <span id="ref-gdb-connecting-to-a-remote-target" class="ref">
+            <a href="https://web.archive.org/web/20210118143611/https://sourceware.org/gdb/current/onlinedocs/gdb/Connecting.html">Connecting to a Remote Target</a> <small>(sourceware.org/gdb)</small>
+        </span>
+    </li>
+    <li>
+        <span id="ref-valgrind-gdb" class="ref">
+            <a href="https://heeris.id.au/2016/valgrind-gdb/">Valgrind and GDB: Tame the Wild C</a> <small>(heeris.id.au)</small>
+        </span>
+    </li>
+</ol>
+
+  </div><a class="u-url" href="/2020/12/03/debugging-your-program-using-valgrind-and-clion.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Ferran Pujol Camins</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Ferran Pujol Camins</li><li><a class="u-email" href="mailto:me@ferranpujolcamins.cat">me@ferranpujolcamins.cat</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/ferranpujolcamins"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">ferranpujolcamins</span></a></li><li><a href="https://www.twitter.com/ferranpujolca"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">ferranpujolca</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>I&#39;m a versatile software developer with a mathematics background who has developed his professional career as an iOS developer. I&#39;m now looking for new professional challenges as a C++ developer. I&#39;m comfortable solving new problems and learning new things. I&#39;ve contributed to several open source projects in different languages. I know C++, Rust and Swift, among other languages. My skills include mathematics, algorithmics, functional programming, category theory and basic electronics.
+ </p>
+      </div>
+    </div>
+
+    <div class="footer-license-wrapper">
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">ferranpujolcamins.cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.ferranpujolcamins.cat" property="cc:attributionName" rel="cc:attributionURL">Ferran Pujol Camins</a>.
+        <br/>
+        The content of this site is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+        <br />
+        Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/ferranpujolcamins/ferranpujolcamins.github.io" rel="dct:source">https://github.com/ferranpujolcamins/ferranpujolcamins.github.io</a>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

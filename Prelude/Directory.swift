@@ -39,15 +39,15 @@ extension Tree {
     }
 }
 
-public struct Directory {
-    let tree: Tree<(name: String, files: [File])>
-
-    public let name: String
-    public let files: [File]
-    public var subdirectories: [Directory] {
-        tree.sub
-    }
-}
+//public struct Directory {
+//    let tree: Tree<(name: String, files: [File])>
+//
+//    public let name: String
+//    public let files: [File]
+//    public var subdirectories: [Directory] {
+//        tree.sub
+//    }
+//}
 
 public struct Directory {
     public init(name: String, files: [File], @ArrayBuilder subdirectories: () -> [Directory] = {[]}) {

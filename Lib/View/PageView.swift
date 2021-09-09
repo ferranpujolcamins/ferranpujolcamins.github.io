@@ -1,6 +1,6 @@
 import HTML
 
-extension Page: HtmlComponent {
+extension Page: HtmlFragment {
     public var content: HtmlProtocol {
         title
         abstract

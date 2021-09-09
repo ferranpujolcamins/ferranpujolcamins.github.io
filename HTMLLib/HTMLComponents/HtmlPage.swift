@@ -1,7 +1,7 @@
 import HTML
 import CSS
 
-public protocol HtmlPage: HtmlComponent {
+public protocol HtmlPage {
     var headContent: HtmlProtocol { get }
     var bodyContent: HtmlProtocol { get }
     var styles: CSS { get }

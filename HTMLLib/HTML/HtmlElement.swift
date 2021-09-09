@@ -2,8 +2,8 @@ import Bow
 
 public struct HtmlElement: HtmlProtocol {
     private enum TypeOfNode {
-        case empty
-        case content(HtmlProtocol)
+        case empty // TODO: 
+        case content([Html])
     }
 
     private init(tag: String, attributes: [String : String], type: TypeOfNode) {
@@ -16,7 +16,7 @@ public struct HtmlElement: HtmlProtocol {
         self.init(tag: tag, attributes: attributes, type: .empty)
     }
 
-    public static func content(tag: String, attributes: [String: String] = [:], @HtmlBuilder content: () -> HtmlProtocol) -> Self {
+    public static func content(tag: String, attributes: [String: String] = [:], @HtmlBuilder content: () -> [Html]) -> Self {
         self.init(tag: tag, attributes: attributes, type: .content(content()))
     }
 
@@ -36,13 +36,14 @@ public struct HtmlElement: HtmlProtocol {
         case .empty:
             return Eval.now(renderedOpeningTagAndAttributes)
         case .content(let content):
-            return content.render.flatMap { renderedContent in
-                return Eval.now("""
-                    \(renderedOpeningTagAndAttributes)
-                        \(renderedContent)
-                    </\(tag)>
-                    """)
-            }^
+            return content.map(\.render).sequence()^.map { $0.joined(separator: "\n") }
+                    .flatMap { renderedContent in
+                        return Eval.now("""
+                                        \(renderedOpeningTagAndAttributes)
+                                            \(renderedContent)
+                                        </\(tag)>
+                                        """)
+                    }^
         }
     }
 

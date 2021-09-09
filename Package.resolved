@@ -30,10 +30,10 @@
       },
       {
         "package": "CSS",
-        "repositoryURL": "https://github.com/carson-katri/swift-css.git",
+        "repositoryURL": "https://github.com/ferranpujolcamins/swift-css.git",
         "state": {
           "branch": "master",
-          "revision": "3ce8fe5662a6c161d2d0737e60a8cbb752b4de25",
+          "revision": "7c048efd6d60c3a8177f2f1ecafb91c593a8e8ed",
           "version": null
         }
       },

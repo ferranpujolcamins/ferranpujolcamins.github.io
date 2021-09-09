@@ -1,6 +1,6 @@
 import HTML
 
-extension Section: HtmlComponent {
+extension Section: HtmlFragment {
     public var content: HtmlProtocol {
         title ?? Html("")
         body

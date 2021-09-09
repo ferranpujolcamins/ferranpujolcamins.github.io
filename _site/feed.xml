@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-02-24T08:53:00+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ferran Pujol Camins</title><subtitle>I'm a versatile software developer with a mathematics background who has developed his professional career as an iOS developer. I'm now looking for new professional challenges as a C++ developer. I'm comfortable solving new problems and learning new things. I've contributed to several open source projects in different languages. I know C++, Rust and Swift, among other languages. My skills include mathematics, algorithmics, functional programming, category theory and basic electronics.
+ </subtitle><entry><title type="html">Is the visitor pattern still relevant?</title><link href="http://localhost:4000/2021/02/09/Is-the-visitor-pattern-still-relevant.html" rel="alternate" type="text/html" title="Is the visitor pattern still relevant?" /><published>2021-02-09T00:00:00+01:00</published><updated>2021-02-09T00:00:00+01:00</updated><id>http://localhost:4000/2021/02/09/Is-the-visitor-pattern-still-relevant</id><content type="html" xml:base="http://localhost:4000/2021/02/09/Is-the-visitor-pattern-still-relevant.html">&lt;p&gt;In this post I’ll talk about the &lt;a href=&quot;https://en.wikipedia.org/wiki/Visitor_pattern&quot;&gt;visitor pattern&lt;/a&gt; and I will try to answer the question: &lt;em&gt;is it still relevant?&lt;/em&gt; To find the answer, I’ll explore sum and existential types: what they are and what they are useful for (spoiler alert: you already know them, just with a different name).&lt;/p&gt;
+
+&lt;p&gt;Although I focus on C++, most of the reasoning can be easily transported to other languages.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;According to the &lt;a href=&quot;https://en.wikipedia.org/wiki/Design_Patterns&quot;&gt;gang of four book&lt;/a&gt;, the visitor pattern allows you to:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Represent an operation to be performed on the elements of an object structure […] without changing the classes of elements on which it operates.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If we only consider what’s explicitly stated in this definition, one could say that the visitor pattern just consists in iterating
+on a data structure and process each element with a function&lt;sup&gt;&lt;a href=&quot;#footnote-a&quot;&gt;[a]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, when we talk about the visitor pattern there’s two implicit assumptions:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Our data structure contains heterogeneous objects that share a common interface.&lt;/li&gt;
+  &lt;li&gt;Our function needs to know the specific runtime type of each object in the structure.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In other words, we face an additional problem: how can our function know the specific runtime type of an object under an interface?
+This is an orthogonal problem to that of how to traverse a data structure, yet, in the visitor pattern both are intermixed&lt;sup&gt;&lt;a href=&quot;#footnote-b&quot;&gt;[b]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-naive-solution&quot;&gt;The naive solution&lt;/h3&gt;
+
+&lt;p&gt;So we want to know the specific runtime type of an object under an interface. How can we do that?&lt;/p&gt;
+
+&lt;p&gt;The naive solution to this problem is to add a virtual method to the base class of our objects for each operation that needs to
+know what is the specific runtime type of our objects. This is problematic because for each such operation
+we need to add a new method to &lt;strong&gt;each&lt;/strong&gt; subclass of our base class. This breaks the &lt;a href=&quot;https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle&quot;&gt;open-closed principle&lt;/a&gt;: we need to modify
+our classes each time we want to add an external operation that works on them, so our classes can’t be closed for modification.
+It also breaks the &lt;a href=&quot;https://en.wikipedia.org/wiki/Dependency_inversion_principle&quot;&gt;dependency inversion principle&lt;/a&gt;, since our classes need to depend on every concrete operation.&lt;/p&gt;
+
+&lt;p&gt;Another tempting approach is to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dynamic_cast&lt;/code&gt;. As we’ll see on the next section, the visitor pattern forces us to add one virtual method to our class hierarchy. Although this is not too bad, with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dynamic_cast&lt;/code&gt; we can do even better: we don’t need to modify our class hierarchy at all.
+The main drawback of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dynamic_cast&lt;/code&gt; is performance: it’s slower than the two virtual calls we need for the visitor pattern. The usage of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dynamic_cast&lt;/code&gt; instead of the visitor pattern is highly despised on the internet. However, in my opinion, if performance is not an issue it’s a perfectly valid solution.&lt;/p&gt;
+
+&lt;p&gt;You can read in more detail about the problems and tradeoffs of these naive solutions and also about the visitor pattern in general in &lt;a href=&quot;https://gieseanw.wordpress.com/2018/12/29/stop-reimplementing-the-virtual-table-and-start-using-double-dispatch/&quot;&gt;this thorough article&lt;/a&gt; by Andy G.&lt;/p&gt;
+
+&lt;h2 id=&quot;double-dispatch-to-the-rescue&quot;&gt;Double dispatch to the rescue&lt;/h2&gt;
+
+&lt;p&gt;As we hinted in the previous section, the less expensive (but still safe) way to determine the runtime type of an object is to use virtual calls.
+Following this idea, we see that if an object of A wants to know the runtime type of an object B, A has to call a virtual method on object B.
+The question is, how do we send the type information back to A? Easy, we just call a method of A from B:&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;memory&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;vector&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Operation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Operation&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// We ask `object` to call us back so we can discover its type.&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// We get back the result value we computed in the corresponding Operation::accept method.&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Compute something when `object` is of type B&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Compute something when `object` is of type C&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Operation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// When an Operation visits us, we visit it back.&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Since here we now `this` is of type `B*`,&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// The call to accept is statically resolved to the appropriate overload.&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// From the call to accept we get back the result of the computation&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// that Operation has performed, we have to return it back.&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Operation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unique_ptr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_unique&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unique_ptr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_unique&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;Operation&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Prints 0 1&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;' '&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This technique is called &lt;em&gt;single&lt;/em&gt; (dynamic) &lt;em&gt;dispatch&lt;/em&gt;, because we use one virtual call to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AbstractClass::accept&lt;/code&gt; to determine the runtime type of our object. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Operation&lt;/code&gt; is usually also called the &lt;em&gt;Visitor&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;If we wanted to add another operation, we would need to add a new method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;int accept(OtherOperation* operation)&lt;/code&gt; method to our class hierarchy, which is exactly what we want to avoid. To fix this, the trick is to abstract over the operations (or visitors) so we only need to add one accept method to our class hierarchy no matter how many operations we have:&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;memory&amp;gt;
+#include &amp;lt;iostream&amp;gt;
+#include &amp;lt;vector&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Operation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractVisitor&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractVisitor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AbstractClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractVisitor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visitor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Operation1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractVisitor&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// We ask `object` to call us back so we can discover its type.&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// We get back the result value we computed in the corresponding A::accept method.&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Compute something when `object` is of type B&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Compute something when `object` is of type C&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    
+  &lt;span class=&quot;nl&quot;&gt;private:&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Operation2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractVisitor&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nl&quot;&gt;public:&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// We ask `object` to call us back so we can discover its type.&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// We get back the result value we computed in the corresponding A::accept method.&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Compute something when `object` is of type B&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;'b'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Compute something when `object` is of type C&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;'c'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    
+  &lt;span class=&quot;nl&quot;&gt;private:&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractVisitor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visitor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// When an Operation visits us, we visit it back.&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// Since here we now `this` is of type `B*`,&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// The call to accept is statically resolved to the appropriate overload.&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// From the call to accept we get back the result of the computation&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// that Operation has performed, we need to return it back.&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;visitor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractVisitor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visitor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;visitor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unique_ptr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_unique&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unique_ptr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;make_unique&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;Operation1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Operation2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Prints 0 1&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;//        b c&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;' '&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;' '&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;computeSomethingWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Different operations might need to compute different result values of different type for each visited element. Thus, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AbstractVisitor::accept&lt;/code&gt; methods can’t return int anymore. Furthermore, we can’t make &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AbstractVisitor&lt;/code&gt; a template class because it has virtual methods.
+This is the reason we need to store the result value in a field of the visitor instance this time.&lt;/p&gt;
+
+&lt;p&gt;This technique is called &lt;a href=&quot;https://en.wikipedia.org/wiki/Double_dispatch&quot;&gt;&lt;em&gt;double&lt;/em&gt; (dynamic) &lt;em&gt;dispatch&lt;/em&gt;&lt;/a&gt;: we have the virtual call from the visitor to the element, and a virtual call back from the element to the visitor.&lt;/p&gt;
+
+&lt;p&gt;When you add to the mix a way to traverse a data structure with this double dispatch technique you get what’s usually called &lt;em&gt;the visitor pattern&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;The question here is: why would you want to know the specific runtime type of an object under an interface? Isn’t the whole point of dynamic polymorphism to forget about specific types and focus on the abstraction? To answer this question, let’s talk about &lt;em&gt;sum types&lt;/em&gt; and &lt;em&gt;existential types&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;sum-and-existential-types&quot;&gt;Sum and Existential types&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Tagged_union&quot;&gt;Sum types&lt;/a&gt;&lt;/em&gt; are data types that hold one single value at a time, out of a predefined finite list of values (or &lt;em&gt;cases&lt;/em&gt;). Also, with each case, a value of a predefined type is stores. Think of an enum, but each enum case has predefined type, and along the enum case, an instance of the appropriate type is stored. For example, in Rust we can write:&lt;/p&gt;
+&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TwoIntsOrStringOrNothing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;AnInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;isize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;isize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// The `AnInt` case holds two integers, or equivalently, holds a value of the tuple type (isize, isize)&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;AString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// The `AString` case holds a String&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Nothing&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// A case can have no associated data&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Existential types&lt;/em&gt; (or just &lt;em&gt;existential&lt;/em&gt; for short) are like sum types, but there’s no predefined list of what values they can hold. You can think of existential types as an infinite sum of types&lt;sup&gt;&lt;a href=&quot;#ref-quantified-types-as-products-and-sums&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;, i.e. an enum that can hold one case at a time, out of an infinite collection of possible types!&lt;/p&gt;
+
+&lt;p&gt;An existential it’s not very useful if we don’t limit the types it can hold: if we have a value of an unknown type, which could be any type, what can we do with it? Can we call the method &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo()&lt;/code&gt; in this type? We don’t know. Can this type be copied? We don’t know, because it could be any type. This is why existentials are usually limited to hold values of types that conform to a certain interface. Thus, we can have an existential that holds “printable types”, so at least we know we can get a string representing the value it holds. For example, in Rust we can write:&lt;/p&gt;
+&lt;div class=&quot;language-rust highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// Define a trait (or interface)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;trait&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Printable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;// A function that takes an existential type whose values must be Printable&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Box&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dyn&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Printable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;// We can call stringify, because we know that values of our existential implement at least this interface,&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;// alttough we can't know the concrete type we are working with.&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;println!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;{}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that even though we have limited what concrete types an existential can hold, the number is still infinite, because you can’t know how many types conforming to the interface a user of your library will write.&lt;/p&gt;
+
+&lt;p&gt;Since we know all the possible types a sum type can hold, the compiler just needs to allocate as much memory as the biggest type needs (plus a little more to store what case we are in). This means that sum types can be allocated on the stack. On the other hand, since we don’t know what types an existential will hold, we can’t put an upper bound on its memory footprint. Thus, the value that an existential types holds is usually allocated on the heap. And I say usually, because in Rust there are several kinds of existential types, some of which can be allocated on the stack&lt;sup&gt;&lt;a href=&quot;#ref-existential-type-in-rust&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;The definition of existential types might have rung a bell with you. In fact existential types are in some sense similar to &lt;a href=&quot;https://en.wikipedia.org/wiki/Polymorphism_(computer_science)#Subtyping&quot;&gt;subtype polymorphism&lt;/a&gt;&lt;sup&gt;&lt;a href=&quot;#ref-oop-vs-type-classes&quot;&gt;[3]&lt;/a&gt;&lt;/sup&gt;: with subtype polymorphism, whenever I have a variable of type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BaseClass*&lt;/code&gt; I can store any instance of &lt;strong&gt;any&lt;/strong&gt; subclass of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BaseClass*&lt;/code&gt;. Likewise, with existential types, whenever I have a variable of type “Existential of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SomeInterface&lt;/code&gt;”, I can store any object of &lt;strong&gt;any&lt;/strong&gt; type that implements &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SomeInterface&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;when-to-use-sum-types-over-existential-types&quot;&gt;When to use Sum types over Existential types?&lt;/h3&gt;
+
+&lt;p&gt;Why would anyone use sum types? At first glance they seem like a weaker version of existential types: while I can hold values of an infinite collection of types in an existential, with a sum type I can only hold values of a finite predefined collection of types. It turns out, that this characteristic of sum types it’s actually their strength&lt;sup&gt;&lt;a href=&quot;#footnote-c&quot;&gt;[c]&lt;/a&gt;&lt;/sup&gt;. Sum types allow us to model a fixed finite number of possibilities and treat each one of them &lt;strong&gt;specifically&lt;/strong&gt;. Most compilers either issue a warning or error when trying to build a program if a function that reads a value of a sum type doesn’t cover all its cases, which helps catching mistakes at build time.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, existentials allow us to be completely oblivious to concrete types, as long as they implement some interface. Thus, we are forced to treat types &lt;strong&gt;uniformly&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Sum types allow us to model choice, or the existence of several known possibilities. Existential types allow us to abstract over the details (what concrete implementation of an interface we are using).&lt;/p&gt;
+
+&lt;h3 id=&quot;this-sounds-interesting-what-does-this-look-on-c&quot;&gt;This sounds interesting. What does this look on C++?&lt;/h3&gt;
+
+&lt;p&gt;As we discussed above, C++ has subtype polymorphism (a pointer to a base class can hold an object of any subclass), which is equivalent to existential types.&lt;/p&gt;
+
+&lt;p&gt;C++ didn’t use to have &lt;strong&gt;safe&lt;/strong&gt; support for sum types: enums can’t have associated data, and using unions is asking for trouble&lt;sup&gt;&lt;a href=&quot;#ref-the-joys-and-pains-of-unrestricted-unions&quot;&gt;[4]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;and-what-does-all-this-have-to-do-with-the-visitor-pattern&quot;&gt;And what does all this have to do with the visitor pattern?&lt;/h3&gt;
+
+&lt;p&gt;So in C++ we didn’t have safe sum types. What could you do when you wanted to model choice or a finite set of possibilities?
+Well, you (ab)used existentials (i.e. subtype polymorphism, i.e. an abstract class with a subclass for each case). As we said in the previous section, one of the reasons you would want to use a sum type is to treat each one of its cases specifically. In this case, this translates to determine the concrete runtime type of an object pointed by a base class pointer. Does this problem sound familiar? This is exactly the problem that led us to &lt;a href=&quot;#double-dispatch-to-the-rescue&quot;&gt;visitor pattern&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;It turns out that the visitor pattern was develop to cope with the lack of support for sum types in classic OOP languages like Java and C++.&lt;/p&gt;
+
+&lt;h3 id=&quot;modern-c&quot;&gt;Modern C++&lt;/h3&gt;
+
+&lt;p&gt;As you might have guessed by my usage of the past tense in the previous section, nowadays C++ has support for safe sum types! Since C++17 we have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;std::variant&lt;/code&gt;. Thanks to the &lt;a href=&quot;https://en.cppreference.com/w/cpp/utility/variant/visit&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;visit&lt;/code&gt;&lt;/a&gt; function (and some obscure template meta-programming) we can handle each case of a variant like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;variant&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;visit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overloaded&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;[](&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;double&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fixed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;' '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;[](&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;quoted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;' '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;[](&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;' '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// &quot;default&quot; case&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, this solution is far from perfect. It’s not totally straightforward (template meta-programming, remember?). For example, if you forget to add a lambda for a case, the compiler spits a long error that apparently doesn’t have anything to do with a missing case.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless, from my point of view, as of C++17, the answer to the question&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Is the visitor pattern still relevant?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;is &lt;strong&gt;no&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;99% of times, there’s no reason to use the visitor pattern (other than dealing with legacy code)&lt;sup&gt;&lt;a href=&quot;#footnote-d&quot;&gt;[d]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;final-thoughts&quot;&gt;Final thoughts&lt;/h2&gt;
+
+&lt;p&gt;The visitor pattern is one of the 23 classic design patterns described in the &lt;a href=&quot;https://en.wikipedia.org/wiki/Design_Patterns&quot;&gt;gang of four book&lt;/a&gt;. Design patterns offer known solutions to design problems following classic object oriented principles. They are reusable in different situations and help us identify and separate design complexity from complexity in our domain. Design patterns improve communication since they are known solutions that developers can identify and recognize.&lt;/p&gt;
+
+&lt;p&gt;However, as we’ve seen with the visitor pattern, they can become obsolete. Programming languages evolve, our collective knowledge as developers does too. New tools, techniques, ideas and paradigms appear. And all these things can make endemic problems and challenges disappear, and with them, the solutions that were designed to spare us from their pain.&lt;/p&gt;
+
+&lt;p&gt;Therefore, we must not blindly use design patterns (or any other established doctrine). We must periodically re-visit and challenge our ideas, study them under new perspectives. We have to listen to new ideas, discuss them and be truly and honestly open to have our mind changed. But, most importantly, we must always do this respectfully, and acknowledging that there are as many valid point of views, as people in this planet.&lt;/p&gt;
+
+&lt;h2 id=&quot;notes&quot;&gt;Notes&lt;/h2&gt;
+
+&lt;ol class=&quot;nestedList spacedList letterList&quot;&gt;
+    &lt;li id=&quot;footnote-a&quot; class=&quot;ref&quot;&gt;
+        Maybe the data structure has more than one sensible way
+        in which it can be iterated, or maybe we need to abstract over the specific structure we are iterating on.
+        In these situations the &lt;a href=&quot;https://en.wikipedia.org/wiki/Iterator_pattern&quot;&gt;iterator pattern&lt;/a&gt; comes in handy.
+    &lt;/li&gt;
+    &lt;li id=&quot;footnote-b&quot; class=&quot;ref&quot;&gt;
+        These two problems were intermixed probably because for some data structures you need to know the runtime type of an object
+        in order to know what is the next object you should visit. For example, consider the following binary tree representation: 
+        &lt;pre&gt;&lt;code&gt;// Abstract class
+class Tree {};
+class Empty: public Tree {};
+class Branch: public Tree {
+    Tree* leftBranch;
+    Tree* rightBranch;
+};&lt;/code&gt;&lt;/pre&gt;
+        When writing an iterator, given an object of type &lt;code&gt;Tree*&lt;/code&gt; we need to know whether it's an instance of &lt;code&gt;Empty&lt;/code&gt;
+        or an instance of &lt;code&gt;Branch&lt;/code&gt; in order to know what are (if any) the next elements of the tree that we have to visit.
+    &lt;/li&gt;
+    &lt;li id=&quot;footnote-c&quot; class=&quot;ref&quot;&gt;
+        Plus they can be stack-allocated, remember!
+    &lt;/li&gt;
+    &lt;li id=&quot;footnote-d&quot; class=&quot;ref&quot;&gt;
+        &lt;a href=&quot;https://en.wikipedia.org/wiki/Serialization&quot;&gt;Serialization&lt;/a&gt; is an example where the visitor pattern can be useful.
+        When writing serialization code, you want to be able to work with any &lt;code&gt;Serializable&lt;/code&gt; type, thus you use existential types.
+        However, you might not want to force every &lt;code&gt;Serializable&lt;/code&gt; subclass to contain their serialization code. Maybe you want
+        one single function elsewhere that takes a &lt;code&gt;Serializable*&lt;/code&gt;, checks what specific case we are dealing with (like you would do with a sum type) and calls the appropriate serialization code. This way the serialization code is as decoupled from your classes as possible.
+        You don't really want to write a sum type, because it could be a huge sum type that you have to change every time you make a class
+        serializable. Also, you are not modeling a finite choice, it really make sense to use existentials. But you need to know the specific type under the abstraction. Thus, in this situation the visitor pattern is the way to go.
+    &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ol class=&quot;nestedList&quot;&gt;
+    &lt;li id=&quot;ref-quantified-types-as-products-and-sums&quot; class=&quot;ref&quot;&gt;
+        &lt;a href=&quot;https://en.wikibooks.org/wiki/Haskell/Existentially_quantified_types#Quantified_Types_as_Products_and_Sums&quot;&gt;Quantified types as products and sums&lt;/a&gt; &lt;small&gt;(en.wikibooks.org/wiki/Haskell)&lt;/small&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;ref-existential-type-in-rust&quot; class=&quot;ref&quot;&gt;
+        &lt;a href=&quot;https://varkor.github.io/blog/2018/07/03/existential-types-in-rust.html&quot;&gt;Existential types in Rust&lt;/a&gt; &lt;small&gt;(varkor.github.io)&lt;/small&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;ref-oop-vs-type-classes&quot; class=&quot;ref&quot;&gt;
+        &lt;a href=&quot;https://wiki.haskell.org/OOP_vs_type_classes#OO_class_always_corresponds_to_a_haskell_class_.2B_a_related_haskell_existential_.28John_Meacham.29&quot;&gt;OOP vs type classes&lt;/a&gt; &lt;small&gt;(wiki.haskell.org)&lt;/small&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;ref-the-joys-and-pains-of-unrestricted-unions&quot; class=&quot;ref&quot;&gt;
+        &lt;a href=&quot;https://faouellet.github.io/unrestricted-unions/&quot;&gt;The joys and pains of unrestricted unions&lt;/a&gt; &lt;small&gt;(faouellet.github.io)&lt;/small&gt;
+    &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;further-reading&quot;&gt;Further reading&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.haskellforall.com/2021/01/the-visitor-pattern-is-essentially-same.html&quot;&gt;The visitor pattern is essentially the same thing as Church encoding&lt;/a&gt; &lt;small&gt;(haskellforall.com)&lt;/small&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.ploeh.dk/2018/06/25/visitor-as-a-sum-type/&quot;&gt;Visitor as a sum type&lt;/a&gt; &lt;small&gt;(blog.ploeh.dk)&lt;/small&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://bartoszmilewski.com/2015/01/13/simple-algebraic-data-types/&quot;&gt;Simple Algebraic Data Types&lt;/a&gt; &lt;small&gt;(bartoszmilewski.com)&lt;/small&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://chadaustin.me/2015/07/sum-types/&quot;&gt;Sum Types Are Coming: What You Should Know&lt;/a&gt; &lt;small&gt;(chadaustin.me)&lt;/small&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://stackoverflow.com/questions/870919/why-are-haskell-algebraic-data-types-closed&quot;&gt;Why are Haskell algebraic data types “closed”?&lt;/a&gt; 
+&lt;small&gt;(stackoverflow.com)&lt;/small&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">In this post I’ll talk about the visitor pattern and I will try to answer the question: is it still relevant? To find the answer, I’ll explore sum and existential types: what they are and what they are useful for (spoiler alert: you already know them, just with a different name).</summary></entry><entry><title type="html">Debugging your program using Valgrind and CLion on Linux</title><link href="http://localhost:4000/2020/12/03/debugging-your-program-using-valgrind-and-clion.html" rel="alternate" type="text/html" title="Debugging your program using Valgrind and CLion on Linux" /><published>2020-12-03T00:00:00+01:00</published><updated>2020-12-03T00:00:00+01:00</updated><id>http://localhost:4000/2020/12/03/debugging-your-program-using-valgrind-and-clion</id><content type="html" xml:base="http://localhost:4000/2020/12/03/debugging-your-program-using-valgrind-and-clion.html">&lt;p&gt;&lt;a href=&quot;https://www.jetbrains.com/clion/&quot;&gt;CLion&lt;/a&gt; has a &lt;a href=&quot;https://valgrind.org/&quot;&gt;Valgrind&lt;/a&gt; integration&lt;sup&gt;&lt;a href=&quot;#ref-clion-valgrind&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt; offering a convenient way to analyse your program with Valgrind and also a nice interface to easily inspect the results.&lt;/p&gt;
+
+&lt;p&gt;However, sometimes it’s hard to spot the source of your problem only by looking at Valgrind reports: &lt;em&gt;Ok, I’m accessing a &lt;a href=&quot;https://en.wikipedia.org/wiki/Dangling_pointer&quot;&gt;Dangling pointer&lt;/a&gt; on this method. But, what instance of my class is actually causing the problem? If only I could set a breakpoint where the invalid read happens…&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Fortunately, it’s possible to debug a program running under Valgrind&lt;sup&gt;&lt;a href=&quot;#ref-debugging-your-program-using-valgrind-gdbserver&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt;. The bad news is that CLion does not support this feature out of the box. But don’t worry, it’s not hard to properly configure CLion to be able to do this.&lt;/p&gt;
+
+&lt;p&gt;In this post I’ll show you how you can configure the CLion debugger to debug a program running under Valgrind. Only a few steps are required.&lt;/p&gt;
+
+&lt;h2 id=&quot;configure-valgrind-on-clion1&quot;&gt;Configure Valgrind on CLion&lt;sup&gt;&lt;a href=&quot;#ref-clion-valgrind&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;&lt;/h2&gt;
+
+&lt;p&gt;To be able to use Valgrind with CLion we first need to install it:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt-get install valgrind
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we need to configure CLion to launch Valgrind in vgdb mode. In vgdb mode, Valgrind will start a gdbserver debugging our program under Valgrind.&lt;/p&gt;
+
+&lt;p&gt;Open CLion settings and navigate to &lt;strong&gt;Build, Execution, Deployment &amp;gt; Dynamic Analysis Tools &amp;gt; Valgrind&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Append the following options to the existing &lt;strong&gt;Analysis options&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;--vgdb=yes --vgdb-error=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/clion-valgrind-configuration.png&quot; alt=&quot;Configuring Valgrind on CLion&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--vgdb=yes&lt;/code&gt; enables the Valgrind gdbserver. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--vgdb-error=0&lt;/code&gt; tells Valgrind to pause the debugging session so we have time to launch a remote gdb session as described below.&lt;/p&gt;
+
+&lt;h2 id=&quot;create-a-clion-configuration-to-debug-the-valgrind-gdbserver3&quot;&gt;Create a CLion configuration to debug the Valgrind gdbserver&lt;sup&gt;&lt;a href=&quot;#ref-clion-gdb-remote-debug&quot;&gt;[3]&lt;/a&gt;&lt;/sup&gt;&lt;/h2&gt;
+
+&lt;p&gt;We need to create a CLion debug configuration to connect to the gdbserver that Valgrind will create.&lt;/p&gt;
+
+&lt;p&gt;Go to &lt;strong&gt;Run &amp;gt; Edit Configurations…&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Create a new &lt;strong&gt;GDB Remote Debug&lt;/strong&gt; configuration.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/creating-gdb-remote-debug-configuration.png&quot; alt=&quot;Creating a GDB Remote Debug configuration&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Name the configuration something like &lt;strong&gt;Valgrind gdb&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;On the &lt;strong&gt;‘target remote’ args&lt;/strong&gt; field write &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;| /usr/bin/vgdb&lt;/code&gt;. The pipe character is important&lt;sup&gt;&lt;a href=&quot;#ref-debugging-your-program-using-valgrind-gdbserver&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt;&lt;sup&gt;&lt;a href=&quot;#ref-gdb-connecting-to-a-remote-target&quot;&gt;[4]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/configuring-gdb-remote-debug-configuration.png&quot; alt=&quot;Configuring the GDB Remote Debug configuration&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;debugging-your-program-under-valgrind&quot;&gt;Debugging your program under Valgrind&lt;/h2&gt;
+
+&lt;p&gt;Now you are ready to debug your program under Valgrind.&lt;/p&gt;
+
+&lt;p&gt;Select the configuration of the program you want to debug and run it with Valgrind memcheck.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/run-valgrind.png&quot; alt=&quot;Run Valgrind&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Valgrind now waits for a debugger to connect before starting your program.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/launched-valgrind.png&quot; alt=&quot;Just launched Valgrind&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Without stopping the valgrind process&lt;/strong&gt;, select the GDB Remote Debug you created and run it in debug mode.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/debug-program.png&quot; alt=&quot;Start Debugger&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now Valgrind will detect that a debugger has connected and it will start your program. On the Run tab you can see the output of the program under analysis. You’ll see there the Valgrind report once the program stops.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/run-tab.png&quot; alt=&quot;Run tab&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;On the Debug tab you have your usual debug controls.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2020-12-03-debugging-your-program-using-valgrind-and-clion/debug-tab.png&quot; alt=&quot;Debug tab&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Valgrind will raise a trap signal (SIGTRAP) when it detects a problem. You can then inspect the stack trace, and your usual debugging commands. You can also unleash the power of Valgrind by sending commands to it through CLion’s gdb console&lt;sup&gt;&lt;a href=&quot;#ref-valgrind-gdb&quot;&gt;[5]&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;EDIT&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;CLion won’t display the output of monitor commands sent to Valgrind’s gdbserver.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://youtrack.jetbrains.com/issue/IDEA-256947&quot;&gt;https://youtrack.jetbrains.com/issue/IDEA-256947&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;troubleshooting&quot;&gt;Troubleshooting&lt;/h2&gt;
+&lt;h3 id=&quot;regular-valgrind-analysis&quot;&gt;Regular Valgrind analysis&lt;/h3&gt;
+
+&lt;p&gt;We just configured Valgrind to wait for a gdb debugger before starting your program. If you want to run a regular Valgrind analysis without the debugger, you’ll need to edit the CLion Valgrind configuration again and set the vgdb option back to &lt;em&gt;no&lt;/em&gt;: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--vgdb=no&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;remote-communication-error&quot;&gt;Remote communication error&lt;/h3&gt;
+
+&lt;p&gt;You might encounter the following error when debugging with the GDB Remote Debug configuration:&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;com.jetbrains.cidr.execution.debugger.backend.gdb.GDBDriver$GDBCommandException: Remote communication error.  Target disconnected.: Connection reset by peer.
+Debugger disconnected
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Usually the problem is that there are more than one instances of Valgrind running and CLion does not know which one it should connect to.&lt;/p&gt;
+
+&lt;p&gt;The easiest solution is to stop all CLion processes, use your operating system task manager to kill any running instances of Valgrind and try again. On an x64 linux computer the process will be named &lt;strong&gt;memcheck-amd64-&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you really need to have several instances of Valgrind running at the same time, you can instruct CLion to connect to a particular one by editing the GDB Remote Debug configuration and appending the pid to the &lt;strong&gt;‘target remote’ args&lt;/strong&gt; command like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;| /usr/bin/vgdb --pid=63077
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Note that you will need to edit your configuration and change the pid number every time.&lt;/p&gt;
+
+&lt;p&gt;For your convenience, Valgrind prints is pid on the console when started in vgdb mode.&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ol class=&quot;nestedList&quot;&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-clion-valgrind&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118142610/https://www.jetbrains.com/help/clion/memory-profiling-with-valgrind.html&quot;&gt;CLion Valgrind memcheck&lt;/a&gt; &lt;small&gt;(jetbrains.com)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-debugging-your-program-using-valgrind-gdbserver&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118142801/https://www.valgrind.org/docs/manual/manual-core-adv.html#manual-core-adv.gdbserver&quot;&gt;Debugging your program using Valgrind gdbserver and GDB&lt;/a&gt; &lt;small&gt;(valgrind.org)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-clion-gdb-remote-debug&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118143028/https://www.jetbrains.com/help/clion/remote-debug.html&quot;&gt;CLion GDB Remote Debug&lt;/a&gt; &lt;small&gt;(jetbrains.com)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-gdb-connecting-to-a-remote-target&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118143611/https://sourceware.org/gdb/current/onlinedocs/gdb/Connecting.html&quot;&gt;Connecting to a Remote Target&lt;/a&gt; &lt;small&gt;(sourceware.org/gdb)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-valgrind-gdb&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://heeris.id.au/2016/valgrind-gdb/&quot;&gt;Valgrind and GDB: Tame the Wild C&lt;/a&gt; &lt;small&gt;(heeris.id.au)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">CLion has a Valgrind integration[1] offering a convenient way to analyse your program with Valgrind and also a nice interface to easily inspect the results.</summary></entry><entry><title type="html">Some notes about generating a macOS bundle with CMake</title><link href="http://localhost:4000/2020/11/27/Notes-CMake-macOS-bundle.html" rel="alternate" type="text/html" title="Some notes about generating a macOS bundle with CMake" /><published>2020-11-27T00:00:00+01:00</published><updated>2020-11-27T00:00:00+01:00</updated><id>http://localhost:4000/2020/11/27/Notes-CMake-macOS-bundle</id><content type="html" xml:base="http://localhost:4000/2020/11/27/Notes-CMake-macOS-bundle.html">&lt;p&gt;This post post is just a bunch of incomplete notes. I found the information to be a bit disseminated and I thought it would be a good idea to put everything togheter in one place. You can find references to the sources.&lt;/p&gt;
+
+&lt;p&gt;At the moment of writing this I was using CMake and CPack 3.18.1.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-are-macos-bundles1&quot;&gt;What are macOS bundles?&lt;sup&gt;&lt;a href=&quot;#ref-bundle-programming-guide&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;&lt;/h2&gt;
+
+&lt;p&gt;A bundle is just a directory with a specific structure that
+contains executable code and the resources needed by that code.
+The operating system treats such directories in special ways. For example, a macOS
+app is a bundle (i.e. a directory). However, macOS presents the app
+as a single unit, as it was a file, in order to prevent users to accidentally
+modify important resources of the app and breaking it.&lt;/p&gt;
+
+&lt;p&gt;There are different &lt;a href=&quot;https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/AboutBundles/AboutBundles.html#//apple_ref/doc/uid/10000123i-CH100-SW7&quot;&gt;types of bundles&lt;/a&gt;. Depending on its structure and contents
+a bundle can be:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;An application bundle&lt;/li&gt;
+  &lt;li&gt;A framework bundle&lt;/li&gt;
+  &lt;li&gt;A plug-in bundle&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For the task at hand we are only concerned about application bundles.&lt;/p&gt;
+
+&lt;h3 id=&quot;structure-of-an-application-bundle11&quot;&gt;Structure of an application bundle&lt;sup&gt;&lt;a href=&quot;#ref-application-bundles&quot;&gt;[1.1]&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
+&lt;p&gt;A Mac app bundle has a simple basic structure: there’s a top-level directory named Contents. All the contents of the bundle are inside this directory, including the resources, executable code, private frameworks, private plug-ins and support files that the application needs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The basic structure of a macOS application&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MyApp.app/
+   Contents/
+      Info.plist
+      MacOS/
+      Resources/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;em&gt;Info.plist&lt;/em&gt; file holds configuration information for the application. macOS looks into this file to gather relevant information about your application.&lt;/p&gt;
+
+&lt;p&gt;The &lt;em&gt;MacOS&lt;/em&gt; directory contains the standalone executable code of the application. In most cases, this directory contains only one binary file: your application’s main executable. &lt;strong&gt;However, you can also put additional standalone executables (such as command-line tools) in this directory&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The &lt;em&gt;Resources&lt;/em&gt; directory contains all of the application’s resource files. Resources are data files that live outside your application’s executable file like images, icons, sounds, strings files, configuration files, and data files (among others).&lt;/p&gt;
+
+&lt;h3 id=&quot;the-infoplist2&quot;&gt;The info.plist&lt;sup&gt;&lt;a href=&quot;#ref-information-property-list&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
+&lt;p&gt;To do.&lt;/p&gt;
+
+&lt;h2 id=&quot;generating-a-bundle-with-cmake-and-cpack&quot;&gt;Generating a bundle with CMake and CPack&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;CPack&lt;/em&gt; is a tool that helps creating installers or installation packages for our application
+for each operating system we support.&lt;/p&gt;
+
+&lt;p&gt;Just like CMake has several &lt;em&gt;generators&lt;/em&gt; to write the input files for several build systems,
+CPack ha several &lt;em&gt;generators&lt;/em&gt; to create different types of packages and installers
+for different platforms&lt;sup&gt;&lt;a href=&quot;#ref-packaging-with-cpack&quot;&gt;[3]&lt;/a&gt;&lt;/sup&gt;.
+There are two main generators for macOS bundles: the &lt;em&gt;DragNDrop&lt;/em&gt; generator and the &lt;em&gt;Bundle&lt;/em&gt; generator.&lt;/p&gt;
+
+&lt;p&gt;The &lt;em&gt;DragNDrop&lt;/em&gt; generator does not allow multiple executables inside a single bundle; it enforces a 1:1 bundle-to-executable relationship.&lt;sup&gt;&lt;a href=&quot;#ref-drag-n-drop-package-generator&quot;&gt;[4]&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;em&gt;Bundle&lt;/em&gt; generator does support multiple executables inside a single bundle.&lt;/p&gt;
+
+&lt;p&gt;CPack is a standalone executable that reads a configuration file usually named &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CPackConfig.cmake&lt;/code&gt;.
+However, CMake comes with a CPack module, which will automatically generate an
+appropriate CPack configuration file&lt;sup&gt;&lt;a href=&quot;#ref-using-cpack-with-cmake&quot;&gt;[3.1]&lt;/a&gt;&lt;/sup&gt;.
+The only thing we need to do to set it up is to include the module in our CMakeLists.txt:&lt;/p&gt;
+&lt;div class=&quot;language-cmake highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;CPack&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In order to use the CPack Bundle generator we need to define three CMake variables&lt;sup&gt;&lt;a href=&quot;#ref-cpack-bundle-generator&quot;&gt;[5]&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CPACK_BUNDLE_NAME&lt;/code&gt;: The bundle name&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CPACK_BUNDLE_ICON&lt;/code&gt;: The bundle icon&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CPACK_BUNDLE_PLIST&lt;/code&gt;: The bundle plist&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We must set these variables before we include CPack in order for them to take effect.&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ol class=&quot;nestedList&quot;&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-bundle-programming-guide&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118140759/https%3A%2F%2Fdeveloper.apple.com%2Flibrary%2Farchive%2Fdocumentation%2FCoreFoundation%2FConceptual%2FCFBundles%2FIntroduction%2FIntroduction.html&quot;&gt;Bundle Programming Guide&lt;/a&gt; &lt;small&gt;(developer.apple.com)&lt;/small&gt;
+        &lt;/span&gt;
+        &lt;ol class=&quot;nestedList&quot;&gt;
+            &lt;li&gt;
+                &lt;span id=&quot;ref-application-bundles&quot; class=&quot;ref&quot;&gt;
+                    &lt;a href=&quot;https://web.archive.org/web/20210118141233/https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFBundles/BundleTypes/BundleTypes.html#//apple_ref/doc/uid/10000123i-CH101-SW13&quot;&gt;Application Bundles&lt;/a&gt;
+                    
+                &lt;/span&gt;
+            &lt;/li&gt;
+        &lt;/ol&gt;
+    &lt;/li&gt;
+        &lt;li&gt;
+        &lt;span id=&quot;ref-information-property-list&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118142123/https://developer.apple.com/documentation/bundleresources/information_property_list&quot;&gt;Information Property List&lt;/a&gt; &lt;small&gt;(developer.apple.com)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-packaging-with-cpack&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118141434/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack&quot;&gt;Packaging with CPack&lt;/a&gt; &lt;small&gt;(gitlab.kitware.com/cmake)&lt;/small&gt;
+        &lt;/span&gt;
+        &lt;ol class=&quot;nestedList&quot;&gt;
+            &lt;li&gt;
+                &lt;span id=&quot;ref-using-cpack-with-cmake&quot; class=&quot;ref&quot;&gt;
+                    &lt;a href=&quot;https://web.archive.org/web/20210118141434/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/Packaging-With-CPack#using-cpack-with-cmake&quot;&gt;Using CPack with CMake&lt;/a&gt;
+                &lt;/span&gt;
+            &lt;/li&gt;
+        &lt;/ol&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-drag-n-drop-package-generator&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118141514/https://gitlab.kitware.com/cmake/community/-/wikis/doc/cpack/PackageGenerators#dragndrop-osx-only&quot;&gt;DragNDrop Package generator&lt;/a&gt; &lt;small&gt;(gitlab.kitware.com/cmake)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span id=&quot;ref-cpack-bundle-generator&quot; class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://web.archive.org/web/20210118141717/https://cmake.org/cmake/help/git-stage/cpack_gen/bundle.html&quot;&gt;CPack Bundle Generator&lt;/a&gt;  &lt;small&gt;(cmake.org)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span class=&quot;ref&quot;&gt;
+            &lt;a href=&quot;https://stackoverflow.com/a/44629910&quot;&gt;MACOSX_BUNDLE vs CPACK_BUNDLE&lt;/a&gt; &lt;small&gt;(stackoverflow.com)&lt;/small&gt;
+        &lt;/span&gt;
+    &lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">This post post is just a bunch of incomplete notes. I found the information to be a bit disseminated and I thought it would be a good idea to put everything togheter in one place. You can find references to the sources.</summary></entry></feed>

@@ -2,23 +2,15 @@ import Foundation
 
 @_functionBuilder
 public struct HtmlBuilder {
-    public static func buildExpression(_ html: [HtmlProtocol]) -> HtmlProtocol {
-        Html(html)
-    }
-
-    public static func buildExpression(_ html: HtmlProtocol) -> HtmlProtocol {
+    public static func buildExpression(_ html: [Html]) -> [Html] {
         html
     }
 
-    public static func buildExpression(_ html: Html) -> HtmlProtocol {
-        html
+    public static func buildExpression(_ html: Html) -> [Html] {
+        [html]
     }
 
-    public static func buildOptional(_ children: HtmlProtocol?) -> HtmlProtocol {
-        Html("")
-    }
-
-    public static func buildBlock(_ html: HtmlProtocol...) -> HtmlProtocol {
-        Html(html)
+    public static func buildBlock(_ html: [Html]...) -> [Html] {
+        Array(html.joined())
     }
 }

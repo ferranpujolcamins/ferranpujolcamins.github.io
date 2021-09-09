@@ -1,7 +1,7 @@
 import Bow
 import HTML
 
-public protocol ReferencesProtocol: HtmlComponent {
+public protocol ReferencesProtocol: HtmlFragment {
     var references: References { get }
 }
 

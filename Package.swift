@@ -17,7 +17,7 @@ let package = Package(
     dependencies: [
         .package(name: "Path.swift", url: "https://github.com/mxcl/Path.swift.git", from: "1.0.0"),
         .package(name: "Bow", url: "https://github.com/bow-swift/bow.git", .branch("master")),
-        .package(name: "CSS", url: "https://github.com/carson-katri/swift-css.git", .branch("master"))
+        .package(name: "CSS", url: "https://github.com/ferranpujolcamins/swift-css.git", .branch("master"))
     ],
     targets: [
         .target(
@@ -63,6 +63,14 @@ let package = Package(
             ],
             path: "HTMLLib/HTML"
         ),
+        .testTarget(
+            name: "HTMLTests",
+            dependencies: [
+                "HTML",
+                "CSS"
+            ],
+            path: "HTMLLib/HTMLTests"
+        ),
         .target(
             name: "BowUtils",
             dependencies: [
@@ -74,6 +82,7 @@ let package = Package(
         .target(
             name: "Prelude",
             dependencies: [
+                "Bow"
             ],
             path: "Prelude"
         ),

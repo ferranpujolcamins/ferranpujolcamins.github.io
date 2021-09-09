@@ -17,7 +17,7 @@ extension WithReferences: HtmlProtocol where T: HtmlProtocol {
         _content.render
     }
 }
-extension WithReferences: HtmlComponent where T: HtmlComponent {
+extension WithReferences: HtmlFragment where T: HtmlFragment {
     public var content: HtmlProtocol {
         _content
     }

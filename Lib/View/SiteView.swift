@@ -9,7 +9,11 @@ extension Site {
                 Directory(
                     name: "posts",
                     // TODO: sanitise file names
-                    files: posts.map { File(name: $0.page.rawTitle, content: $0.render.value()) }
+                    // TODO: don't create empty files
+                    files: posts.flatMap { [
+                        File(name: "\($0.page.rawTitle).html", content: $0.render.value()),
+                        //File(name: "\($0.page.rawTitle).css", content: $0.styles.string())
+                    ] }
                 )
             }
         )
