@@ -139,6 +139,19 @@ permalink: /resume/
 
 ## Work experience
 
+### ASUNI
+
+ <table class="innerBorderTable">
+  <col width="27%">
+  <col width="17%">
+  <tr>
+    <td>Mar. 2021 – Present</td>
+    <td class="role">C++ Developer</td>
+    <td><p>At ASUNI I'm developing VisualARQ, an architectural design pluguin for Rhino.</p>
+    </td>
+  </tr>
+</table>
+
 ### FREENOW
 
  <table class="innerBorderTable">
