@@ -169,7 +169,7 @@ permalink: /resume/
   </tr>
   <tr>
     <td>Jan. 2020 – June 2020</td>
-    <td><em>Back-end Developer</em></td>
+    <td>Back-end Developer</td>
     <td><p>I joined the release tooling team, a newly formed team with the mission to
     develop a back-end service that automates our apps release process.</p>
 
@@ -220,12 +220,12 @@ permalink: /resume/
  <table class="innerBorderTable">
   <tr>
     <td>May 2017</td>
-    <td><em>ISTQB Certified Tester Foundation Level</em></td>
+    <td>ISTQB Certified Tester Foundation Level</td>
     <td>ISTQB International Software Testing Qualifications Board</td>
   </tr>
   <tr>
     <td>2011 - 2019</td>
-    <td><em>Degree in Mathematics</em> (Unfinished)</td>
+    <td>Degree in Mathematics (Unfinished)</td>
     <td>Universitat Politècnica de Catalunya</td>
   </tr>
   <tr>
@@ -239,7 +239,7 @@ permalink: /resume/
 
 <div class="autoTable3">
   <div>
-    <span><em>English</em></span>
+    <span>English</span>
     <div class="meter">
       <span style="width: 80%"/>
     </div>
@@ -280,7 +280,7 @@ permalink: /resume/
   <tr>
     <td>
       <p><a href="https://www.mixxx.org">Mixxx</a></p>
-      <p><em>Dj software (C++)</em></p>
+      <p>Dj software (C++)</p>
     </td>
     <td>
       <ul>
@@ -294,7 +294,7 @@ permalink: /resume/
   <tr>
     <td>
       <p><a href="https://gitlab.com/uklotzde/aoide-rs/">Aoide</a></p>
-      <p><em>A distributed music library management system (Rust)</em></p>
+      <p>A distributed music library management system (Rust)</p>
     </td>
     <td>
       <ul>
@@ -315,7 +315,7 @@ permalink: /resume/
   <tr>
     <td>
       <p><a href="https://github.com/davecom/SwiftGraph">SwiftGraph</a></p>
-      <p><em>Graph data structures and algorithms library (Swift)</em></p>
+      <p>Graph data structures and algorithms library (Swift)</p>
     </td>
     <td>
       <ul>
@@ -334,7 +334,7 @@ permalink: /resume/
     </td>
     <td>
       <ul>
-      <li><em>Rank-N polymorphism documentation</em><sup><a href="https://bow-swift.io/docs/fp-concepts/rank-n-polymorphism/">[1]</a><a href="https://github.com/bow-swift/bow/pull/622">[2]</a></sup></li>
+      <li>Rank-N polymorphism documentation<sup><a href="https://bow-swift.io/docs/fp-concepts/rank-n-polymorphism/">[1]</a><a href="https://github.com/bow-swift/bow/pull/622">[2]</a></sup></li>
       <li>New Exists type encoding the notion of existential type used to improve Coyoneda implementation<sup><a href="https://github.com/bow-swift/bow/pull/623">[1]</a></sup></li>
       <li>Program type for free-er monads<sup><a href="https://github.com/bow-swift/bow/pull/634">[1]</a></sup></li>
       <li>Multi-way tree data type and its usual typeclass instances<sup><a href="https://github.com/bow-swift/bow/pull/626">[1]</a></sup></li>
