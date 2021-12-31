@@ -309,7 +309,7 @@ permalink: /resume/
       <p>An Aoide client to retrieve iTunes library metadata (Swift)</p>
     </td>
     <td>
-      Project creator
+      Author
     </td>
   </tr>
   <tr>
@@ -372,13 +372,11 @@ permalink: /resume/
   </tr>
   <tr>
     <td>
-      <p><a href="https://github.com/NixOS/nixpkgs">nixpkgs</a></p>
-      <p>A collection of software packages for Nix package manager</p>
+      <p><a href="https://github.com/ferranpujolcamins/GarminDataFields">Garmin Data Fields</a></p>
+      <p>A collection of data fields for Garmin sport devices</p>
     </td>
     <td>
-      <ul>
-      <li>Allow chromaprint library to be built on macOS<sup><a href="https://github.com/NixOS/nixpkgs/pull/98057">[1]</a></sup></li>
-      </ul>
+      Author
     </td>
   </tr>
 </table>
