@@ -43,6 +43,18 @@ permalink: /resume/
     </div>
   </div>
   <div class="skill">
+    <span><em>C++ templates</em></span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
+  <div class="skill">
+    <span><em>C++/CLI</em></span>
+    <div class="meter">
+      <span style="width: 50%"/>
+    </div>
+  </div>
+  <div class="skill">
     <span><em>Qt</em></span>
     <div class="meter">
       <span style="width: 50%"/>
