@@ -39,7 +39,7 @@ permalink: /resume/
   <div class="skill">
     <span><em>C++ coroutines</em></span>
     <div class="meter">
-      <span style="width: 75%"/>
+      <span style="width: 50%"/>
     </div>
   </div>
   <div class="skill">
