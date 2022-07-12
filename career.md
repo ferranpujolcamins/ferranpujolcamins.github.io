@@ -4,20 +4,31 @@ title: My Career
 permalink: /career/
 ---
 
+### Avid
+
+ <table class="innerBorderTable">
+  <col width="27%">
+  <col width="17%">
+  <tr>
+    <td>May 2022 - Present</td>
+    <td class="role">Audio Applications C++ Developer</td>
+    <td><p>At Avid I work mainly with C++, Qt and QML.</p>
+    </td>
+  </tr>
+</table>
+
 ### ASUNI
 
  <table class="innerBorderTable">
   <col width="27%">
   <col width="17%">
   <tr>
-    <td>Mar. 2021 – Present</td>
+    <td>Mar. 2021 – May 2022</td>
     <td class="role">C++ Developer</td>
-    <td><p>At ASUNI I am developing VisualARQ for Windows, a
-    20 years old architectural design plugin for Rhino.</p>
-    <p>I work partially remote within a distributed team of
+    <td><p>At ASUNI I developed VisualARQ for Windows, an architectural design plugin for Rhino.</p>
+    <p>I worked partially remote within a distributed team of
     developers and product specialists.</p>
-    <p>My work is focused on geometry algorithms, but I have
-    also developed our custom unit testing framework.</p>
+    <p>My work was focused on geometry algorithms, but I also developed the project's custom unit testing framework.</p>
     </td>
   </tr>
 </table>
