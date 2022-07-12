@@ -11,7 +11,7 @@ permalink: /career/
   <col width="17%">
   <tr>
     <td>May 2022 - Present</td>
-    <td class="role">Audio Applications C++ Developer</td>
+    <td class="role">Audio Applications Developer</td>
     <td><p>At Avid I work mainly with C++, Qt and QML.</p>
     </td>
   </tr>
