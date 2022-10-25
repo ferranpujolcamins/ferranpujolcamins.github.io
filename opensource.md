@@ -21,6 +21,7 @@ permalink: /opensource/
     </td>
     <td>
       <ul>
+	  <li>Simple waveshaper effect with input and output normalization<sup><a href="https://github.com/mixxxdj/mixxx/pull/10932">[1]</a></sup></li>
       <li>Moving interquartile mean to calculate BPM from user taps<sup><a href="https://github.com/mixxxdj/mixxx/pull/450">[1]</a></sup></li>
       <li>UI improvements<sup><a href="https://github.com/mixxxdj/mixxx/pull/917">[1]</a><a href="https://github.com/mixxxdj/mixxx/pull/682">[2]</a><a href="https://github.com/mixxxdj/mixxx/pull/678">[3]</a><a href="https://github.com/mixxxdj/mixxx/pull/674">[4]</a><a href="https://github.com/mixxxdj/mixxx/pull/668">[5]</a><a href="https://github.com/mixxxdj/mixxx/pull/666/">[6]</a></sup></li>
       <li>Little tweaks to audio effects<sup><a href="https://github.com/mixxxdj/mixxx/pull/1502">[1]</a><a href="https://github.com/mixxxdj/mixxx/pull/733">[2]</a><a href="https://github.com/mixxxdj/mixxx/pull/1260">[3]</a></sup></li>
